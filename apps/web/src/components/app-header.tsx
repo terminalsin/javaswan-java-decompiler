@@ -14,7 +14,7 @@ export function AppHeader() {
     <header className="flex h-12 items-center justify-between border-b border-border bg-card px-4">
       {/* Logo */}
       <div className="text-sm font-semibold tracking-wider">
-        <span>BLACK</span>
+        <span>JAVA</span>
         <span className="text-primary">SWAN</span>
       </div>
 

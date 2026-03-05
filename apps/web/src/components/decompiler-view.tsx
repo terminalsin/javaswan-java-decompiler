@@ -6,13 +6,17 @@ import { FileTree } from "./file-tree";
 import { CodePanel } from "./code-panel";
 import { ErrorBanner } from "./error-banner";
 import { useDecompiler } from "@/lib/use-decompiler";
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from "@/components/ui/resizable";
 
 export function DecompilerView() {
   useDecompiler(); // Activates the Web Worker
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Trigger the entrance animation on next frame
     const raf = requestAnimationFrame(() => setMounted(true));
     return () => cancelAnimationFrame(raf);
   }, []);
@@ -25,16 +29,22 @@ export function DecompilerView() {
     >
       <AppHeader />
       <ErrorBanner />
-      <div className="flex flex-1 overflow-hidden">
+      <ResizablePanelGroup orientation="horizontal" className="flex-1">
         {/* Sidebar */}
-        <div className="w-[280px] shrink-0 border-r border-border bg-card overflow-hidden">
+        <ResizablePanel
+          defaultSize="280px"
+          minSize="120px"
+          maxSize="50%"
+          className="bg-card"
+        >
           <FileTree />
-        </div>
+        </ResizablePanel>
+        <ResizableHandle className="hover:bg-primary/20 transition-colors duration-150" />
         {/* Main content */}
-        <div className="flex-1 overflow-hidden">
+        <ResizablePanel defaultSize="1fr" minSize="30%">
           <CodePanel />
-        </div>
-      </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 }

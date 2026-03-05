@@ -15,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BlackSwan Decompiler",
+  title: "JavaSwan Decompiler",
   description: "Java bytecode decompiler",
 };
 

@@ -53,6 +53,7 @@
         "radix-ui": "^1.4.3",
         "react": "19.2.3",
         "react-dom": "19.2.3",
+        "react-resizable-panels": "^4",
         "tailwind-merge": "^3.5.0",
       },
       "devDependencies": {
@@ -86,7 +87,7 @@
     },
     "packages/java-asm-ts": {
       "name": "@blkswn/java-asm",
-      "version": "1.0.0",
+      "version": "1.0.3",
       "devDependencies": {
         "@types/jszip": "^3.4.0",
         "@types/node": "^20.19.26",
@@ -1557,6 +1558,8 @@
 
     "react-remove-scroll-bar": ["react-remove-scroll-bar@2.3.8", "", { "dependencies": { "react-style-singleton": "^2.2.2", "tslib": "^2.0.0" }, "peerDependencies": { "@types/react": "*", "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" }, "optionalPeers": ["@types/react"] }, "sha512-9r+yi9+mgU33AKcj6IbT9oRCO78WriSj6t/cF8DWBZJ9aOGPOTEDvdUDz1FwKim7QXWwmHqtdHnRJfhAxEG46Q=="],
 
+    "react-resizable-panels": ["react-resizable-panels@4.7.1", "", { "peerDependencies": { "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-RYBRgvdZhnUds5jJWYr1up0hYFofgN1dqSwhxfBl9Savoxms0gyGF0AfaXskhxTYkXrlwc+TlQPe5UkoV+1neg=="],
+
     "react-style-singleton": ["react-style-singleton@2.2.3", "", { "dependencies": { "get-nonce": "^1.0.0", "tslib": "^2.0.0" }, "peerDependencies": { "@types/react": "*", "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-b6jSvxvVnyptAiLjbkWLE/lOnR4lfTtDAl+eUC7RZy+QQWc6wRzIV2CE6xBuMmDxc2qIihtDCZD5NPOFl7fRBQ=="],
 
     "readable-stream": ["readable-stream@2.3.8", "", { "dependencies": { "core-util-is": "~1.0.0", "inherits": "~2.0.3", "isarray": "~1.0.0", "process-nextick-args": "~2.0.0", "safe-buffer": "~5.1.1", "string_decoder": "~1.1.1", "util-deprecate": "~1.0.1" } }, "sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA=="],
@@ -1885,9 +1888,13 @@
 
     "@blkswn/java-decompiler/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", { "devDependencies": { "@types/jszip": "^3.4.0", "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
 
+    "@blkswn/java-decompiler/@blkswn/java-ir": ["@blkswn/java-ir@file:packages/java-ir-ts", { "dependencies": { "@blkswn/java-asm": "file:../java-asm-ts" }, "devDependencies": { "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
+
     "@blkswn/java-decompiler/typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
     "@blkswn/java-decompiler-ai/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", { "devDependencies": { "@types/jszip": "^3.4.0", "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
+
+    "@blkswn/java-decompiler-ai/@blkswn/java-ir": ["@blkswn/java-ir@file:packages/java-ir-ts", { "dependencies": { "@blkswn/java-asm": "file:../java-asm-ts" }, "devDependencies": { "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
 
     "@blkswn/java-decompiler-ai/typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
@@ -1896,6 +1903,8 @@
     "@blkswn/java-ir/typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
     "@blkswn/similarity-eval/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", { "devDependencies": { "@types/jszip": "^3.4.0", "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
+
+    "@blkswn/similarity-eval/@blkswn/java-ir": ["@blkswn/java-ir@file:packages/java-ir-ts", { "dependencies": { "@blkswn/java-asm": "file:../java-asm-ts" }, "devDependencies": { "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
 
     "@blkswn/similarity-eval/typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
@@ -2019,6 +2028,8 @@
 
     "web/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", { "devDependencies": { "@types/jszip": "^3.4.0", "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
 
+    "web/@blkswn/java-ir": ["@blkswn/java-ir@file:packages/java-ir-ts", { "dependencies": { "@blkswn/java-asm": "file:../java-asm-ts" }, "devDependencies": { "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
+
     "web/@types/react": ["@types/react@19.2.14", "", { "dependencies": { "csstype": "^3.2.2" } }, "sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w=="],
 
     "web/react": ["react@19.2.3", "", {}, "sha512-Ku/hhYbVjOQnXDZFv2+RibmLFGwFdeeKHFcOTlrt7xplBnya5OGn/hIRDsqDiSUcfORsDC7MPxwork8jBwsIWA=="],
@@ -2029,11 +2040,17 @@
 
     "yargs/string-width": ["string-width@4.2.3", "", { "dependencies": { "emoji-regex": "^8.0.0", "is-fullwidth-code-point": "^3.0.0", "strip-ansi": "^6.0.1" } }, "sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g=="],
 
-    "@blkswn/java-analysis/@blkswn/java-ir/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", { "devDependencies": { "@types/jszip": "^3.4.0", "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
+    "@blkswn/java-analysis/@blkswn/java-ir/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
+
+    "@blkswn/java-decompiler-ai/@blkswn/java-ir/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
 
     "@blkswn/java-decompiler/@blkswn/java-analysis/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
 
     "@blkswn/java-decompiler/@blkswn/java-analysis/@blkswn/java-ir": ["@blkswn/java-ir@file:packages/java-ir-ts", {}],
+
+    "@blkswn/java-decompiler/@blkswn/java-ir/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
+
+    "@blkswn/similarity-eval/@blkswn/java-ir/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
 
     "@dotenvx/dotenvx/execa/get-stream": ["get-stream@6.0.1", "", {}, "sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg=="],
 
@@ -2076,6 +2093,8 @@
     "eslint/chalk/ansi-styles": ["ansi-styles@4.3.0", "", { "dependencies": { "color-convert": "^2.0.1" } }, "sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg=="],
 
     "ora/cli-cursor/restore-cursor": ["restore-cursor@5.1.0", "", { "dependencies": { "onetime": "^7.0.0", "signal-exit": "^4.1.0" } }, "sha512-oMA2dcrw6u0YfxJQXm342bFKX/E4sG9rbTzO9ptUcR/e8A33cHuvStiYOwH7fszkZlZ1z/ta9AAoPk2F4qIOHA=="],
+
+    "web/@blkswn/java-ir/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
 
     "yargs/string-width/emoji-regex": ["emoji-regex@8.0.0", "", {}, "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A=="],
 

@@ -102,7 +102,7 @@ export function DropZone() {
             {/* Branding */}
             <div className="flex flex-col items-center gap-1">
               <h1 className="text-2xl font-mono font-semibold tracking-tight text-foreground">
-                JavaSwan
+                Java<span className="text-primary">Swan</span>
               </h1>
               <span className="text-xs font-mono text-muted-foreground tracking-widest uppercase">
                 Java Decompiler

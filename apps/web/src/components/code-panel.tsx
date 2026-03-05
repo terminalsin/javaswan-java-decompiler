@@ -98,6 +98,18 @@ export function CodePanel() {
             scrollBeyondLastLine: false,
             renderLineHighlight: "line",
             padding: { top: 12 },
+            bracketPairColorization: { enabled: true },
+            guides: {
+              bracketPairs: true,
+              indentation: true,
+            },
+            matchBrackets: "always",
+            folding: true,
+            foldingStrategy: "indentation",
+            showFoldingControls: "mouseover",
+            smoothScrolling: true,
+            cursorBlinking: "smooth",
+            cursorSmoothCaretAnimation: "on",
           }}
         />
       </div>
