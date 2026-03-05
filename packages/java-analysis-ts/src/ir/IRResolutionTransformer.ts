@@ -115,7 +115,7 @@ export class IRResolutionTransformer {
       const newIndex = this.transformExpr(stmt.index);
       const newValue = this.transformExpr(stmt.value);
       if (newArray !== stmt.array || newIndex !== stmt.index || newValue !== stmt.value) {
-        return new ArrayStoreStmt(newArray, newIndex, newValue);
+        return new ArrayStoreStmt(newArray, newIndex, newValue, stmt.elementType);
       }
       return stmt;
     }

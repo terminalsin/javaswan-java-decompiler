@@ -132,7 +132,8 @@ export class RecordComponentWriter extends RecordComponentVisitor {
     let attribute = this.firstAttribute;
     while (attribute !== null) {
       this.symbolTable.addConstantUtf8(attribute.type);
-      size += 6 + attribute.content.length;
+      const content = attribute.getContent();
+      size += 6 + (content !== null ? content.length : 0);
       attribute = attribute.nextAttribute;
     }
 
@@ -193,9 +194,11 @@ export class RecordComponentWriter extends RecordComponentVisitor {
     // Write custom attributes
     attribute = this.firstAttribute;
     while (attribute !== null) {
+      const content = attribute.getContent();
       output.putShort(this.symbolTable.addConstantUtf8(attribute.type));
-      output.putInt(attribute.content.length);
-      output.putByteArray(attribute.content.data, 0, attribute.content.length);
+      const contentLength = content !== null ? content.length : 0;
+      output.putInt(contentLength);
+      output.putByteArray(content, 0, contentLength);
       attribute = attribute.nextAttribute;
     }
   }

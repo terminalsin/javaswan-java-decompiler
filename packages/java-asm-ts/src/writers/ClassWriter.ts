@@ -444,7 +444,7 @@ export class ClassWriter extends ClassVisitor {
     if (this.firstRecordComponent !== null) {
       this.symbolTable.addConstantUtf8('Record');
       let recordSize = 2; // components_count
-      let recordComponent = this.firstRecordComponent;
+      let recordComponent: RecordComponentWriter | null = this.firstRecordComponent;
       while (recordComponent !== null) {
         recordSize += recordComponent.computeRecordComponentInfoSize();
         recordComponent = recordComponent.nextRecordComponentWriter;
@@ -593,7 +593,7 @@ export class ClassWriter extends ClassVisitor {
     if (this.firstRecordComponent !== null) {
       result.putShort(this.symbolTable.addConstantUtf8('Record'));
       let recordSize = 2; // components_count
-      let rc = this.firstRecordComponent;
+      let rc: RecordComponentWriter | null = this.firstRecordComponent;
       while (rc !== null) {
         recordSize += rc.computeRecordComponentInfoSize();
         rc = rc.nextRecordComponentWriter;
@@ -601,7 +601,7 @@ export class ClassWriter extends ClassVisitor {
       result.putInt(recordSize);
       result.putShort(this.recordComponentsCount);
 
-      let recordComponent = this.firstRecordComponent;
+      let recordComponent: RecordComponentWriter | null = this.firstRecordComponent;
       while (recordComponent !== null) {
         recordComponent.putRecordComponentInfo(result);
         recordComponent = recordComponent.nextRecordComponentWriter;

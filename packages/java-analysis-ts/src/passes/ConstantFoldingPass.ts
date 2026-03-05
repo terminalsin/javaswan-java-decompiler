@@ -243,7 +243,7 @@ export class ConstantFoldingPass extends AbstractOptimizationPass {
       const [newIndex, c2] = this.transformExprWithChange(stmt.index, state);
       const [newValue, c3] = this.transformExprWithChange(stmt.value, state);
       if (c1 || c2 || c3) {
-        return [new ArrayStoreStmt(newArray, newIndex, newValue), true];
+        return [new ArrayStoreStmt(newArray, newIndex, newValue, stmt.elementType), true];
       }
       return [stmt, false];
     }
