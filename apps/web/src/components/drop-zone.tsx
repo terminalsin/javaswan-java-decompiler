@@ -1,18 +1,16 @@
 "use client";
 
-import { useState, useCallback, useEffect, type DragEvent } from "react";
+import { useState, useCallback, useEffect, useSyncExternalStore, type DragEvent } from "react";
 import { useJar } from "@/lib/jar-context";
 import { FileArchive, Loader2 } from "lucide-react";
+
+const emptySubscribe = () => () => {};
 
 export function DropZone() {
   const { loadJar, isLoading } = useJar();
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
   // Clear error after a few seconds
   useEffect(() => {
@@ -81,10 +79,9 @@ export function DropZone() {
           border-2 border-dashed
           transition-all duration-300 ease-out
           ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
-          ${
-            isDragging
-              ? "border-primary scale-[1.01] shadow-[0_0_40px_-10px_rgba(212,135,58,0.3)]"
-              : "border-border"
+          ${isDragging
+            ? "border-primary scale-[1.01] shadow-[0_0_40px_-10px_rgba(212,135,58,0.3)]"
+            : "border-border"
           }
           ${isLoading ? "pointer-events-none" : ""}
         `}
@@ -105,7 +102,7 @@ export function DropZone() {
             {/* Branding */}
             <div className="flex flex-col items-center gap-1">
               <h1 className="text-2xl font-mono font-semibold tracking-tight text-foreground">
-                BlackSwan
+                JavaSwan
               </h1>
               <span className="text-xs font-mono text-muted-foreground tracking-widest uppercase">
                 Java Decompiler

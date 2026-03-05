@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import JSZip from "jszip";
-import { parseJar, type JarEntry } from "../jar-parser";
+import { parseJar } from "../jar-parser";
 
 describe("parseJar", () => {
   it("extracts .class entries from a JAR zip", async () => {

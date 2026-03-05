@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildFileTree, type TreeNode } from "../tree-builder";
+import { buildFileTree } from "../tree-builder";
 
 describe("buildFileTree", () => {
   it("builds a nested tree from flat paths", () => {

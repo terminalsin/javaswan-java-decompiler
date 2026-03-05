@@ -5,6 +5,8 @@ import { industrialDarkTheme } from "@/lib/monaco-theme";
 import Editor, { type BeforeMount } from "@monaco-editor/react";
 import { AlertTriangle, RotateCcw } from "lucide-react";
 
+const SKELETON_WIDTHS = [72, 58, 85, 63, 91, 47, 76, 54];
+
 export function CodePanel() {
   const { selectedPath, decompiled, isDecompiling, error, setError } = useJar();
 
@@ -37,7 +39,7 @@ export function CodePanel() {
               <div
                 key={i}
                 className="h-3 animate-pulse rounded-sm bg-muted"
-                style={{ width: `${40 + Math.random() * 50}%`, animationDelay: `${i * 100}ms` }}
+                style={{ width: `${SKELETON_WIDTHS[i]}%`, animationDelay: `${i * 100}ms` }}
               />
             ))}
           </div>
