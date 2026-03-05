@@ -6,5 +6,8 @@ import { DecompilerView } from "@/components/decompiler-view";
 
 export default function Home() {
   const { fileName } = useJar();
+
+  // DecompilerView handles its own fade-in via mounted state.
+  // DropZone already has its own mount animation.
   return fileName ? <DecompilerView /> : <DropZone />;
 }

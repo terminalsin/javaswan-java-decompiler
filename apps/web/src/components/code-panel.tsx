@@ -3,9 +3,10 @@
 import { useJar } from "@/lib/jar-context";
 import { industrialDarkTheme } from "@/lib/monaco-theme";
 import Editor, { type BeforeMount } from "@monaco-editor/react";
+import { AlertTriangle, RotateCcw } from "lucide-react";
 
 export function CodePanel() {
-  const { selectedPath, decompiled, isDecompiling } = useJar();
+  const { selectedPath, decompiled, isDecompiling, error, setError } = useJar();
 
   const source = selectedPath ? decompiled.get(selectedPath) : undefined;
 
@@ -45,6 +46,36 @@ export function CodePanel() {
     );
   }
 
+  // Error state: decompilation failed for this file
+  if (!source && !isDecompiling && error) {
+    return (
+      <div className="flex h-full flex-col">
+        <FilePathBar path={selectedPath} />
+        <div className="flex flex-1 items-center justify-center">
+          <div className="flex flex-col items-center gap-4 max-w-md text-center px-8">
+            <AlertTriangle className="h-10 w-10 text-destructive" strokeWidth={1.5} />
+            <div className="space-y-2">
+              <p className="text-sm font-mono font-semibold text-destructive">
+                Decompilation Failed
+              </p>
+              <p className="text-xs font-mono text-muted-foreground leading-relaxed">
+                {error}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setError(null)}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-primary border border-primary/30 hover:bg-primary/10 transition-colors duration-150"
+            >
+              <RotateCcw className="h-3 w-3" />
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-full flex-col">
       <FilePathBar path={selectedPath} />
@@ -53,7 +84,7 @@ export function CodePanel() {
           height="100%"
           language="java"
           theme="industrial-dark"
-          value={source ?? "// Decompilation failed"}
+          value={source ?? "// Select a class file to view its source"}
           beforeMount={handleBeforeMount}
           options={{
             readOnly: true,

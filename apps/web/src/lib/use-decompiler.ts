@@ -5,7 +5,7 @@ import { useJar } from "./jar-context";
 
 export function useDecompiler() {
   const workerRef = useRef<Worker | null>(null);
-  const { selectedPath, decompiled, getEntryBytes, setDecompiledSource, setIsDecompiling, setError } = useJar();
+  const { selectedPath, decompiled, error, getEntryBytes, setDecompiledSource, setIsDecompiling, setError } = useJar();
 
   useEffect(() => {
     workerRef.current = new Worker(
@@ -35,7 +35,10 @@ export function useDecompiler() {
       setIsDecompiling(true);
       workerRef.current.postMessage({ type: "decompile", path, bytes });
     },
-    [decompiled, getEntryBytes, setIsDecompiling]
+    // Include `error` so that clearing an error (via retry) recreates this
+    // callback and the auto-decompile effect re-fires for the same path.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [decompiled, getEntryBytes, setIsDecompiling, error]
   );
 
   // Auto-decompile when selection changes

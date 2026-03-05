@@ -9,6 +9,16 @@ import type { TreeNode } from "@/lib/tree-builder";
 export function FileTree() {
   const { tree, selectedPath, selectFile } = useJar();
 
+  if (tree.length === 0) {
+    return (
+      <div className="flex h-full items-center justify-center p-4">
+        <p className="text-xs font-mono text-muted-foreground text-center">
+          No class files found
+        </p>
+      </div>
+    );
+  }
+
   return (
     <ScrollArea className="h-full">
       <div className="p-2">
