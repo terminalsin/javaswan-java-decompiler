@@ -1,6 +1,38 @@
-# blackswan-java
+<img width="1584" height="200" alt="@blkswnjava-asm (1)" src="https://github.com/user-attachments/assets/984d98bf-8240-4eb5-b13d-db45e7e5863c" />
+
+# JavaSwan Java Decompiler
+<p align="">
+  <a href="https://www.npmjs.com/package/@blkswn/java-asm">
+    <img alt="npm version" src="https://img.shields.io/npm/v/@blkswn/java-asm?style=for-the-badge">
+  </a>
+  <a href="https://github.com/terminalsin/javaswan-java-decompiler/issues">
+    <img alt="Issues" src="https://img.shields.io/github/issues/terminalsin/javaswan-java-decompiler?style=for-the-badge">
+  </a>
+  <a href="https://twitter.com/thibautone/follow?screen_name=thibaut">
+    <img alt="Follow @thibautone" src="https://img.shields.io/twitter/follow/thibautone?label=Follow&style=for-the-badge">
+  </a>
+  <a href="https://discord.gg/5vmgwgszxQ">
+    <img alt="Discord" src="https://img.shields.io/discord/904888546609987674?label=discord&style=for-the-badge">
+  </a>
+  <a href="https://opensource.org/licenses/BSD-3-Clause">
+    <img alt="BSD-3-Clause" src="https://img.shields.io/badge/license-BSD--3--Clause-blue?style=for-the-badge">
+  </a>
+</p>
 
 A Java bytecode toolkit written entirely in TypeScript. Read `.class` files, lift them to an IR, analyze them, and decompile them back to source — all without a JVM.
+<br/>
+
+> [!NOTE]
+> We have a public accessible version available at https://javaswan.com.
+>
+> I also wrote a blog post, would mean the world if you could read it :)
+> 
+> https://shanyu.juneja.net/thoughts/self-improving-decompiler/
+
+https://github.com/user-attachments/assets/b20d1b82-ab8f-4b69-89b2-9b36da96afac
+
+## Installing with NPM
+
 
 ## Packages
 
