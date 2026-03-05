@@ -66,6 +66,7 @@
         "tailwindcss": "^4",
         "tw-animate-css": "^1.4.0",
         "typescript": "^5",
+        "vitest": "^4.0.18",
       },
     },
     "packages/java-analysis-ts": {
@@ -1884,15 +1885,9 @@
 
     "@blkswn/java-decompiler/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", { "devDependencies": { "@types/jszip": "^3.4.0", "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
 
-    "@blkswn/java-decompiler/@blkswn/java-ir": ["@blkswn/java-ir@file:packages/java-ir-ts", { "dependencies": { "@blkswn/java-asm": "file:../java-asm-ts" }, "devDependencies": { "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
-
     "@blkswn/java-decompiler/typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
     "@blkswn/java-decompiler-ai/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", { "devDependencies": { "@types/jszip": "^3.4.0", "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
-
-    "@blkswn/java-decompiler-ai/@blkswn/java-decompiler": ["@blkswn/java-decompiler@file:packages/java-decompiler-ts", { "dependencies": { "@blkswn/java-analysis": "file:../java-analysis-ts", "@blkswn/java-asm": "file:../java-asm-ts", "@blkswn/java-ir": "file:../java-ir-ts" }, "devDependencies": { "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
-
-    "@blkswn/java-decompiler-ai/@blkswn/java-ir": ["@blkswn/java-ir@file:packages/java-ir-ts", { "dependencies": { "@blkswn/java-asm": "file:../java-asm-ts" }, "devDependencies": { "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
 
     "@blkswn/java-decompiler-ai/typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
@@ -1901,10 +1896,6 @@
     "@blkswn/java-ir/typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
     "@blkswn/similarity-eval/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", { "devDependencies": { "@types/jszip": "^3.4.0", "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
-
-    "@blkswn/similarity-eval/@blkswn/java-decompiler": ["@blkswn/java-decompiler@file:packages/java-decompiler-ts", { "dependencies": { "@blkswn/java-analysis": "file:../java-analysis-ts", "@blkswn/java-asm": "file:../java-asm-ts", "@blkswn/java-ir": "file:../java-ir-ts" }, "devDependencies": { "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
-
-    "@blkswn/similarity-eval/@blkswn/java-ir": ["@blkswn/java-ir@file:packages/java-ir-ts", { "dependencies": { "@blkswn/java-asm": "file:../java-asm-ts" }, "devDependencies": { "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
 
     "@blkswn/similarity-eval/typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
@@ -2028,10 +2019,6 @@
 
     "web/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", { "devDependencies": { "@types/jszip": "^3.4.0", "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
 
-    "web/@blkswn/java-decompiler": ["@blkswn/java-decompiler@file:packages/java-decompiler-ts", { "dependencies": { "@blkswn/java-analysis": "file:../java-analysis-ts", "@blkswn/java-asm": "file:../java-asm-ts", "@blkswn/java-ir": "file:../java-ir-ts" }, "devDependencies": { "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
-
-    "web/@blkswn/java-ir": ["@blkswn/java-ir@file:packages/java-ir-ts", { "dependencies": { "@blkswn/java-asm": "file:../java-asm-ts" }, "devDependencies": { "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
-
     "web/@types/react": ["@types/react@19.2.14", "", { "dependencies": { "csstype": "^3.2.2" } }, "sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w=="],
 
     "web/react": ["react@19.2.3", "", {}, "sha512-Ku/hhYbVjOQnXDZFv2+RibmLFGwFdeeKHFcOTlrt7xplBnya5OGn/hIRDsqDiSUcfORsDC7MPxwork8jBwsIWA=="],
@@ -2042,29 +2029,11 @@
 
     "yargs/string-width": ["string-width@4.2.3", "", { "dependencies": { "emoji-regex": "^8.0.0", "is-fullwidth-code-point": "^3.0.0", "strip-ansi": "^6.0.1" } }, "sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g=="],
 
-    "@blkswn/java-analysis/@blkswn/java-ir/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
+    "@blkswn/java-analysis/@blkswn/java-ir/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", { "devDependencies": { "@types/jszip": "^3.4.0", "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
 
-    "@blkswn/java-decompiler-ai/@blkswn/java-decompiler/@blkswn/java-analysis": ["@blkswn/java-analysis@file:packages/java-analysis-ts", {}],
+    "@blkswn/java-decompiler/@blkswn/java-analysis/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
 
-    "@blkswn/java-decompiler-ai/@blkswn/java-decompiler/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
-
-    "@blkswn/java-decompiler-ai/@blkswn/java-decompiler/@blkswn/java-ir": ["@blkswn/java-ir@file:packages/java-ir-ts", {}],
-
-    "@blkswn/java-decompiler-ai/@blkswn/java-ir/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
-
-    "@blkswn/java-decompiler/@blkswn/java-analysis/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", { "devDependencies": { "@types/jszip": "^3.4.0", "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
-
-    "@blkswn/java-decompiler/@blkswn/java-analysis/@blkswn/java-ir": ["@blkswn/java-ir@file:packages/java-ir-ts", { "dependencies": { "@blkswn/java-asm": "file:../java-asm-ts" }, "devDependencies": { "@types/node": "^20.19.26", "jszip": "^3.10.1", "tsup": "^8.5.1", "typescript": "^5.9.3", "vitest": "^4.0.16" } }],
-
-    "@blkswn/java-decompiler/@blkswn/java-ir/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
-
-    "@blkswn/similarity-eval/@blkswn/java-decompiler/@blkswn/java-analysis": ["@blkswn/java-analysis@file:packages/java-analysis-ts", {}],
-
-    "@blkswn/similarity-eval/@blkswn/java-decompiler/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
-
-    "@blkswn/similarity-eval/@blkswn/java-decompiler/@blkswn/java-ir": ["@blkswn/java-ir@file:packages/java-ir-ts", {}],
-
-    "@blkswn/similarity-eval/@blkswn/java-ir/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
+    "@blkswn/java-decompiler/@blkswn/java-analysis/@blkswn/java-ir": ["@blkswn/java-ir@file:packages/java-ir-ts", {}],
 
     "@dotenvx/dotenvx/execa/get-stream": ["get-stream@6.0.1", "", {}, "sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg=="],
 
@@ -2108,21 +2077,11 @@
 
     "ora/cli-cursor/restore-cursor": ["restore-cursor@5.1.0", "", { "dependencies": { "onetime": "^7.0.0", "signal-exit": "^4.1.0" } }, "sha512-oMA2dcrw6u0YfxJQXm342bFKX/E4sG9rbTzO9ptUcR/e8A33cHuvStiYOwH7fszkZlZ1z/ta9AAoPk2F4qIOHA=="],
 
-    "web/@blkswn/java-decompiler/@blkswn/java-analysis": ["@blkswn/java-analysis@file:packages/java-analysis-ts", {}],
-
-    "web/@blkswn/java-decompiler/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
-
-    "web/@blkswn/java-decompiler/@blkswn/java-ir": ["@blkswn/java-ir@file:packages/java-ir-ts", {}],
-
-    "web/@blkswn/java-ir/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
-
     "yargs/string-width/emoji-regex": ["emoji-regex@8.0.0", "", {}, "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A=="],
 
     "yargs/string-width/is-fullwidth-code-point": ["is-fullwidth-code-point@3.0.0", "", {}, "sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg=="],
 
     "yargs/string-width/strip-ansi": ["strip-ansi@6.0.1", "", { "dependencies": { "ansi-regex": "^5.0.1" } }, "sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A=="],
-
-    "@blkswn/java-decompiler/@blkswn/java-analysis/@blkswn/java-ir/@blkswn/java-asm": ["@blkswn/java-asm@file:packages/java-asm-ts", {}],
 
     "@inquirer/core/wrap-ansi/string-width/emoji-regex": ["emoji-regex@8.0.0", "", {}, "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A=="],
 
