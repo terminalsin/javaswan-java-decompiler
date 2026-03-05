@@ -1,135 +1,66 @@
-# Turborepo starter
+# blackswan-java
 
-This Turborepo starter is maintained by the Turborepo core team.
+A Java bytecode toolkit written entirely in TypeScript. Read `.class` files, lift them to an IR, analyze them, and decompile them back to source — all without a JVM.
 
-## Using this example
+## Packages
 
-Run the following command:
+| Package | Description |
+| --- | --- |
+| [`@blkswn/java-asm`](packages/java-asm-ts) | TypeScript port of OW2 ASM. Read, write, and transform raw bytecode. |
+| [`@blkswn/java-ir`](packages/java-ir-ts) | Intermediate representation. Lifts stack bytecode into typed expressions and a control flow graph. |
+| [`@blkswn/java-analysis`](packages/java-analysis-ts) | Analysis framework. Class hierarchy, call graphs, constant folding, optimization passes. |
+| [`@blkswn/java-decompiler`](packages/java-decompiler-ts) | Decompiler. Turns bytecode into readable Java source. |
+| [`@blkswn/java-decompiler-ai`](packages/java-decompiler-ts-ai) | AI cleanup pass. Renames variables, fixes formatting artifacts in decompiled output. |
 
-```sh
-npx create-turbo@latest
-```
+## Apps
 
-## What's inside?
+| App | Description |
+| --- | --- |
+| [`similarity-eval`](apps/similarity-eval) | Benchmark harness. Scores decompiler output against original source using 9 similarity metrics. |
+| [`web`](apps/web) | Web UI. Interactive decompiler with Monaco editor. |
+| [`java-format-cli`](apps/java-format-cli) | Java source formatter (Palantir). Used by the eval pipeline. |
+| [`decompilers`](apps/decompilers) | Bundled reference decompilers (CFR, Procyon, Vineflower) for benchmarking. |
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+## How it fits together
 
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+.class / .jar file
+       │
+       ▼
+   java-asm          read/write raw bytecode
+       │
+       ▼
+   java-ir            lift to expressions + control flow graph
+       │
+       ▼
+   java-analysis      resolve types, optimize, fold constants
+       │
+       ▼
+   java-decompiler    reconstruct Java source
+       │
+       ▼
+   java-decompiler-ai (optional) clean up variable names + formatting
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## Quick start
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+```bash
+# install
+bun install
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+# build everything
+bun run build
 
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+# run tests
+bun run turbo run test
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Build a single package:
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+```bash
+turbo run build --filter=@blkswn/java-asm
 ```
 
-### Remote Caching
+## License
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+BSD-3-Clause

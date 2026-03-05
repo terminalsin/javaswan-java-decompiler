@@ -1,168 +1,214 @@
+![logo](docs/logo.png)
+<p align="center">
+  <a href="https://www.npmjs.com/package/@blkswn/java-asm">
+    <img alt="npm version" src="https://img.shields.io/npm/v/@blkswn/java-asm?style=flat-square">
+  </a>
+  <a href="https://www.npmjs.com/package/@blkswn/java-asm">
+    <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/@blkswn/java-asm?style=flat-square">
+  </a>
+  <a href="https://github.com/blackswanhq/java-asm-ts/blob/main/LICENSE">
+    <img alt="License: BSD-3-Clause" src="https://img.shields.io/github/license/blackswanhq/java-asm-ts?style=flat-square">
+  </a>
+  <a href="https://github.com/blackswanhq/java-asm-ts/issues">
+    <img alt="Issues" src="https://img.shields.io/github/issues/blackswanhq/java-asm-ts?style=flat-square">
+  </a>
+  <a href="https://twitter.com/intent/follow?screen_name=blackswanlabs">
+    <img alt="Follow @blackswanlabs" src="https://img.shields.io/twitter/follow/blackswanlabs?label=Follow&style=flat-square">
+  </a>
+  <a href="https://discord.gg/X9yRzJWTVt">
+    <img alt="Discord" src="https://img.shields.io/discord/1181964512292647004?label=discord&style=flat-square">
+  </a>
+  <a href="https://opensource.org/licenses/BSD-3-Clause">
+    <img alt="BSD-3-Clause" src="https://img.shields.io/badge/license-BSD--3--Clause-blue?style=flat-square">
+  </a>
+</p>
+
+
 # @blkswn/java-asm
 
-A TypeScript implementation of OW2 ASM - a Java bytecode manipulation and analysis framework.
+TypeScript port of [OW2 ASM](https://asm.ow2.io/). Read, write, and transform Java bytecode.
 
-## Features
+Supports Java 1.1 through Java 27. Same visitor API as ASM.
 
-- Full Java bytecode parsing (ClassReader)
-- Full Java bytecode generation (ClassWriter)
-- Visitor pattern API for class transformation
-- Support for all Java bytecode instructions
-- Frame support for reading/writing StackMapTable
-- TypeScript-first with full type definitions
-- Complete annotation support (including type annotations and parameter annotations)
-- Module support (Java 9+)
-- Record support (Java 16+)
-- Generic signature parsing and writing
-- Bootstrap method support for invokedynamic and ConstantDynamic
-
-## Installation
+## Install
 
 ```bash
 npm install @blkswn/java-asm
 ```
 
-## Usage
-
-### Reading a Class File
+## Read a class file
 
 ```typescript
-import { ClassReader, ClassVisitor, Opcodes } from '@blkswn/java-asm';
+import { ClassReader, ClassVisitor, FieldVisitor, MethodVisitor, Opcodes } from "@blkswn/java-asm";
+import fs from "fs";
 
-// Read class bytes (e.g., from a .class file)
-const classBytes = new Uint8Array([...]); // Your class file bytes
+const bytecode = new Uint8Array(fs.readFileSync("MyClass.class"));
+const reader = new ClassReader(bytecode);
 
-const reader = new ClassReader(classBytes);
-reader.accept(new MyClassVisitor(), 0);
-```
+// Quick inspection
+console.log(reader.getClassName());    // "com/example/MyClass"
+console.log(reader.getSuperClassName()); // "java/lang/Object"
+console.log(reader.getInterfaces());   // ["java/io/Serializable"]
 
-### Writing a Class File
+// Walk the full structure with a visitor
+class Printer extends ClassVisitor {
+  constructor() { super(Opcodes.ASM9); }
 
-```typescript
-import { ClassWriter, Opcodes } from '@blkswn/java-asm';
+  visit(version: number, access: number, name: string) {
+    console.log(`class ${name} (Java ${version & 0xffff})`);
+  }
 
-const writer = new ClassWriter(0);
-writer.visit(
-  Opcodes.V11,
-  Opcodes.ACC_PUBLIC,
-  'com/example/MyClass',
-  null,
-  'java/lang/Object',
-  null
-);
+  visitField(access: number, name: string, descriptor: string): FieldVisitor | null {
+    console.log(`  field ${name}: ${descriptor}`);
+    return null;
+  }
 
-// Add fields, methods, etc.
-
-const bytes = writer.toByteArray();
-```
-
-### Parsing Generic Signatures
-
-```typescript
-import { SignatureReader, SignatureWriter, SignatureVisitor } from '@blkswn/java-asm';
-
-// Parse a generic signature
-const reader = new SignatureReader('<T:Ljava/lang/Object;>Ljava/util/List<TT;>;');
-reader.accept(mySignatureVisitor);
-
-// Build a generic signature
-const writer = new SignatureWriter();
-writer.visitFormalTypeParameter('T');
-writer.visitClassBound().visitClassType('java/lang/Object');
-writer.visitClassBound().visitEnd();
-// ... more visits
-const signature = writer.toString();
-```
-
-### Working with Modules
-
-```typescript
-import { ClassWriter, Opcodes } from '@blkswn/java-asm';
-
-const writer = new ClassWriter(0);
-writer.visit(Opcodes.V11, Opcodes.ACC_MODULE, 'module-info', null, null, null);
-
-const moduleVisitor = writer.visitModule('com.example.mymodule', Opcodes.ACC_OPEN, '1.0');
-if (moduleVisitor) {
-  moduleVisitor.visitRequire('java.base', Opcodes.ACC_MANDATED, null);
-  moduleVisitor.visitExport('com/example/api', 0, null);
-  moduleVisitor.visitEnd();
+  visitMethod(access: number, name: string, descriptor: string): MethodVisitor | null {
+    console.log(`  method ${name}${descriptor}`);
+    return null;
+  }
 }
 
-writer.visitEnd();
-const bytes = writer.toByteArray();
+reader.accept(new Printer(), 0);
 ```
 
-### Working with Records
+## Write a class file
 
 ```typescript
-import { ClassWriter, Opcodes } from '@blkswn/java-asm';
+import { ClassWriter, Opcodes } from "@blkswn/java-asm";
 
-const writer = new ClassWriter(0);
-writer.visit(
-  Opcodes.V16,
-  Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL | Opcodes.ACC_RECORD,
-  'com/example/Point',
-  null,
-  'java/lang/Record',
-  null
+const cw = new ClassWriter(0);
+cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, "com/example/Greeter", null, "java/lang/Object", null);
+
+// field: private String name;
+const fv = cw.visitField(Opcodes.ACC_PRIVATE, "name", "Ljava/lang/String;", null, null);
+fv?.visitEnd();
+
+// method: public static int add(int a, int b) { return a + b; }
+const mv = cw.visitMethod(
+  Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC,
+  "add", "(II)I", null, null
 );
+if (mv) {
+  mv.visitCode();
+  mv.visitVarInsn(Opcodes.ILOAD, 0);
+  mv.visitVarInsn(Opcodes.ILOAD, 1);
+  mv.visitInsn(Opcodes.IADD);
+  mv.visitInsn(Opcodes.IRETURN);
+  mv.visitMaxs(2, 2);
+  mv.visitEnd();
+}
 
-// Add record components
-const component1 = writer.visitRecordComponent('x', 'I', null);
-component1?.visitEnd();
+cw.visitEnd();
 
-const component2 = writer.visitRecordComponent('y', 'I', null);
-component2?.visitEnd();
-
-writer.visitEnd();
-const bytes = writer.toByteArray();
+const bytes: Uint8Array = cw.toByteArray();
+fs.writeFileSync("Greeter.class", bytes);
 ```
 
-## API Overview
+## Copy/transform a class
 
-### Core Classes
+Pass a `ClassWriter` as the delegate to a `ClassVisitor`. The reader pipes events through your visitor into the writer — override what you want to change, everything else passes through.
 
-- `ClassReader` - Parses Java class files
-- `ClassWriter` - Generates Java class files
-- `ClassVisitor` - Abstract visitor for class elements
-- `MethodVisitor` - Abstract visitor for method bytecode
-- `FieldVisitor` - Abstract visitor for fields
-- `AnnotationVisitor` - Abstract visitor for annotations
-- `ModuleVisitor` - Abstract visitor for module declarations
-- `RecordComponentVisitor` - Abstract visitor for record components
-- `SignatureVisitor` - Abstract visitor for generic signatures
+```typescript
+import { ClassReader, ClassWriter, ClassVisitor, MethodVisitor, Opcodes, COMPUTE_MAXS } from "@blkswn/java-asm";
 
-### Readers and Writers
+const original = new Uint8Array(fs.readFileSync("Input.class"));
 
-- `SignatureReader` - Parses generic type signatures
-- `SignatureWriter` - Generates generic type signatures
-- `ModuleWriter` - Generates Module attributes
-- `RecordComponentWriter` - Generates record component info
+const reader = new ClassReader(original);
+const writer = new ClassWriter(COMPUTE_MAXS);
 
-### Type Utilities
+// Pass-through: copies the class unchanged
+reader.accept(writer, 0);
 
-- `Type` - Type descriptors and utilities
-- `TypePath` - Paths into type arguments
-- `TypeReference` - References to types in annotations
-- `Handle` - Method handles for invokedynamic
-- `ConstantDynamic` - Dynamic constants
+const output: Uint8Array = writer.toByteArray();
+```
 
-### Constants
+To transform, insert a visitor in the middle:
 
-- `Opcodes` - All JVM opcodes and constants (ASM4-ASM9)
+```typescript
+class MethodRenamer extends ClassVisitor {
+  constructor(delegate: ClassVisitor) {
+    super(Opcodes.ASM9, delegate);
+  }
 
-### Exceptions
+  visitMethod(access: number, name: string, descriptor: string,
+              signature: string | null, exceptions: string[] | null): MethodVisitor | null {
+    // rename "oldName" → "newName", pass everything else through
+    const newName = name === "oldName" ? "newName" : name;
+    return super.visitMethod(access, newName, descriptor, signature, exceptions);
+  }
+}
 
-- `AsmError` - Base exception for ASM errors
-- `InvalidClassError` - Invalid class file format
-- `UnsupportedClassVersionError` - Unsupported class version
-- `UnknownOpcodeError` - Unknown bytecode opcode
-- `SignatureParseError` - Signature parsing error
+const reader = new ClassReader(original);
+const writer = new ClassWriter(COMPUTE_MAXS);
+reader.accept(new MethodRenamer(writer), 0);
+```
 
-## Supported Java Versions
+## Process a JAR
 
-This library supports class files from Java 1.1 through Java 21 (class file versions 45.3 through 65.0).
+```typescript
+import JSZip from "jszip";
+import { ClassReader, ClassWriter, COMPUTE_MAXS } from "@blkswn/java-asm";
+
+const zip = await JSZip.loadAsync(fs.readFileSync("app.jar"));
+
+for (const [name, entry] of Object.entries(zip.files)) {
+  if (!name.endsWith(".class")) continue;
+
+  const bytecode = await entry.async("uint8array");
+  const reader = new ClassReader(bytecode);
+  const writer = new ClassWriter(COMPUTE_MAXS);
+  reader.accept(writer, 0); // or insert your transformer here
+
+  zip.file(name, writer.toByteArray());
+}
+
+const out = await zip.generateAsync({ type: "uint8array" });
+fs.writeFileSync("app-modified.jar", out);
+```
+
+## Control flow
+
+```typescript
+import { Label } from "@blkswn/java-asm";
+
+// public static int max(int a, int b)
+const mv = cw.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "max", "(II)I", null, null);
+if (mv) {
+  mv.visitCode();
+  const elseLabel = new Label();
+  const endLabel = new Label();
+
+  mv.visitVarInsn(Opcodes.ILOAD, 0);
+  mv.visitVarInsn(Opcodes.ILOAD, 1);
+  mv.visitJumpInsn(Opcodes.IF_ICMPLE, elseLabel);
+
+  mv.visitVarInsn(Opcodes.ILOAD, 0);       // a > b: return a
+  mv.visitJumpInsn(Opcodes.GOTO, endLabel);
+
+  mv.visitLabel(elseLabel);
+  mv.visitVarInsn(Opcodes.ILOAD, 1);       // else: return b
+
+  mv.visitLabel(endLabel);
+  mv.visitInsn(Opcodes.IRETURN);
+  mv.visitMaxs(2, 2);
+  mv.visitEnd();
+}
+```
+
+## API at a glance
+
+| | Read | Write | Visit |
+|---|---|---|---|
+| **Class** | `ClassReader` | `ClassWriter` | `ClassVisitor` |
+| **Method** | — | — | `MethodVisitor` |
+| **Field** | — | — | `FieldVisitor` |
+| **Annotation** | — | — | `AnnotationVisitor` |
+| **Signature** | `SignatureReader` | `SignatureWriter` | `SignatureVisitor` |
+| **Module** | — | `ModuleWriter` | `ModuleVisitor` |
+| **Record** | — | `RecordComponentWriter` | `RecordComponentVisitor` |
+
+Utilities: `Opcodes`, `Type`, `Label`, `Handle`, `ConstantDynamic`
 
 ## License
 

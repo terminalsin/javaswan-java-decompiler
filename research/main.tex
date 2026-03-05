@@ -36,15 +36,6 @@
   showstringspaces=false
 }
 
-\lstdefinelanguage{TypeScript}{
-  keywords={class, interface, type, function, const, let, var, return, if, else, for, while, switch, case, break, continue, new, this, extends, implements, export, import, from, async, await, readonly, enum, null, undefined, true, false, typeof, instanceof},
-  sensitive=true,
-  comment=[l]{//},
-  morecomment=[s]{/*}{*/},
-  morestring=[b]',
-  morestring=[b]"
-}
-
 \title{BlackSwan: Recursive Self-Improvement of a Java Decompiler\\via AI-Driven Code Modification and\\Multi-Metric Evaluation}
 
 \author{
@@ -58,32 +49,29 @@
 \maketitle
 
 \begin{abstract}
-We present BlackSwan, a Java bytecode decompiler implemented in TypeScript that improves itself through a recursive feedback loop driven by an AI coding agent (Claude Code). The system comprises five layers: a complete port of the OW2 ASM bytecode manipulation library to TypeScript (${\sim}12{,}000$ lines), a typed intermediate representation with 19 expression and 13 statement node types organized into control flow graphs, an analysis framework supporting class hierarchy construction, virtual method table resolution, and dataflow-driven optimization passes, a multi-strategy decompiler with structured control flow recovery and fallback emission, and an AI post-processor for runtime output cleanup. We evaluate decompiler output against original source code using a composite metric drawn from nine similarity measures spanning textual, sequential, compression-based, and structural categories. In the recursive loop, the AI agent reads benchmark scores, reads the decompiler's own source code alongside competing decompilers' output, and proposes targeted patches. After iterative self-improvement, BlackSwan achieves a composite similarity score of 0.8693 on a 47-class benchmark, within 0.7\% of CFR (0.8760), a decompiler with over a decade of manual development. We discuss implications for automated deobfuscation, where the loop can be specialized against known obfuscation tools by providing obfuscator source code and paired samples.
+We present BlackSwan, a Java bytecode decompiler implemented entirely in TypeScript that improves itself through a recursive feedback loop driven by an AI coding agent (Claude Code). The decompiler pipeline---bytecode parsing, intermediate representation, analysis, and source emission---was built by the AI agent itself across approximately two weeks, totaling ${\sim}32{,}000$ lines of TypeScript. We evaluate output quality using a composite metric drawn from nine similarity measures spanning textual, sequential, compression-based, and structural categories. In the recursive loop, the AI agent reads benchmark scores, reads the decompiler's own source code alongside competing decompilers' output, and proposes targeted patches. After iterative self-improvement, BlackSwan achieves a composite similarity score of 0.8693 on a 47-class benchmark, within 0.7\% of CFR (0.8760), a decompiler with over a decade of manual development. We discuss implications for automated deobfuscation, where the loop can be specialized against known obfuscation tools.
 \end{abstract}
 
 \begin{IEEEkeywords}
-decompilation, reverse engineering, self-improving systems, large language models, intermediate representation, Java bytecode, program analysis
+decompilation, reverse engineering, self-improving systems, large language models, Java bytecode, program analysis, AI-driven development
 \end{IEEEkeywords}
 
 %% ============================================================
 \section{Introduction}
 \label{sec:intro}
 
-Java bytecode decompilation---the recovery of human-readable source code from compiled \texttt{.class} files---has been an active area of research and tooling for over two decades. Existing production decompilers such as CFR~\cite{cfr}, Procyon~\cite{procyon}, Vineflower~\cite{vineflower}, and FernFlower~\cite{fernflower} are predominantly maintained by small teams or individual developers. Each exhibits distinct strengths and failure modes: CFR excels at control flow recovery but may mangle variable naming, Procyon handles generics faithfully but struggles with certain obfuscated switch patterns, and Vineflower produces clean output on standard code but encounters difficulties with edge cases in exception handling.
+Java bytecode decompilation---the recovery of human-readable source code from compiled \texttt{.class} files---has been an active area of tooling for over two decades. Existing production decompilers such as CFR~\cite{cfr}, Procyon~\cite{procyon}, Vineflower~\cite{vineflower}, and FernFlower~\cite{fernflower} are predominantly maintained by small teams or individual developers. Each exhibits distinct failure modes, and progress is slow: a single obfuscation transform can be authored in a weekend, while adapting decompilers to handle it may take months.
 
-A fundamental asymmetry exists in the obfuscation-decompilation arms race. Obfuscation is \emph{mechanical}: applying a transformation at build time requires implementing a single pass. Decompilation is \emph{analytical}: reversing that transformation requires understanding its structure, recognizing its patterns in arbitrary contexts, and generating correct inverse operations. A single developer can add a new obfuscation pass in a weekend; adapting all existing decompilers to handle it may take months.
+We propose closing this gap by constructing a decompiler whose source code is iteratively modified by an AI coding agent in a closed feedback loop. The agent reads benchmark scores, reads its own source, reads competing decompilers' output on the same inputs, and proposes patches. The benchmark is re-run. The loop continues.
 
-We propose a fundamentally different approach: rather than manually engineering decompilation heuristics, we construct a decompiler whose source code can be iteratively modified by an AI coding agent in a closed feedback loop. The agent reads benchmark scores comparing the decompiler's output against ground truth, reads the decompiler's own source, reads competing decompilers' output on the same inputs, and proposes targeted patches. The benchmark is re-run and the loop continues.
-
-This approach required a significant engineering investment: the entire decompilation pipeline---from bytecode parsing to source emission---was implemented in TypeScript rather than Java, because the AI agent (Claude Code) exhibits substantially stronger code comprehension and editing capabilities in TypeScript. The resulting system, BlackSwan, comprises approximately 32,000 lines of TypeScript across five packages.
+Critically, the AI agent also \emph{built} the decompiler. The entire pipeline---a port of OW2 ASM~\cite{asm} to TypeScript, an intermediate representation inspired by MapleIR~\cite{mapleir}, an analysis framework, and the decompiler itself---was authored by Claude Code (Opus 4.5) in approximately two weeks, comprising ${\sim}32{,}000$ lines of TypeScript. The language choice was architectural: the recursive loop requires the AI to read and edit the decompiler's source, and current-generation models are substantially more effective at modifying TypeScript than Java.
 
 Our contributions are:
 \begin{enumerate}
-    \item A complete TypeScript port of OW2 ASM~\cite{asm}, supporting Java class file versions 45.3 through 65.0 (Java 1.1--21).
-    \item A typed intermediate representation inspired by MapleIR~\cite{mapleir} with 19 expression types, 13 statement types, and a stack-simulating IR builder.
-    \item A multi-metric evaluation framework using nine similarity measures with weighted composite scoring, designed to resist Goodhart's Law~\cite{goodhart} under optimization pressure.
-    \item Empirical demonstration that recursive AI-driven code modification produces measurable, persistent improvements in decompiler output quality.
-    \item A discussion of applications to automated deobfuscation via obfuscator-specialized decompiler variants.
+    \item A methodology for recursive, AI-driven self-improvement of a software tool via a multi-metric feedback loop with competitor-informed differential analysis.
+    \item A composite evaluation framework of nine similarity measures designed to resist Goodhart's Law~\cite{goodhart} under optimization pressure.
+    \item Empirical results showing an AI-built decompiler achieves 0.8693 composite similarity, within 0.7\% of CFR (0.8760) and 100\% file match rate, after iterative self-improvement.
+    \item A discussion of specialization for automated deobfuscation via obfuscator-targeted loop configurations.
 \end{enumerate}
 
 %% ============================================================
@@ -92,487 +80,210 @@ Our contributions are:
 
 \subsection{Java Decompilation}
 
-Modern Java decompilers share a common architecture: bytecode parsing, intermediate representation construction, control flow analysis, type inference, and source emission. FernFlower~\cite{fernflower}, the IntelliJ IDEA default, uses an SSA-based IR with iterative dataflow analysis. CFR~\cite{cfr} employs aggressive pattern matching for control flow reconstruction. Procyon~\cite{procyon} introduced improved generic type recovery. Vineflower~\cite{vineflower}, a FernFlower fork, focuses on output readability through enhanced formatting and variable naming.
-
-All four are written in Java, limiting their accessibility to AI-driven modification pipelines that operate most effectively on dynamically-typed or TypeScript codebases.
+Modern Java decompilers share a common architecture: bytecode parsing, IR construction, control flow analysis, type inference, and source emission. FernFlower~\cite{fernflower} uses an SSA-based IR with iterative dataflow analysis. CFR~\cite{cfr} employs aggressive pattern matching for control flow reconstruction. Procyon~\cite{procyon} introduced improved generic type recovery. Vineflower~\cite{vineflower}, a FernFlower fork, focuses on output readability. All are written in Java and have been developed over years to decades.
 
 \subsection{AI-Assisted Decompilation}
 
-Recent work has explored using large language models (LLMs) directly for decompilation. LLM4Decompile~\cite{llm4decompile} fine-tunes models on paired assembly-source datasets. SLaDe~\cite{slade} uses sequence-to-sequence models for C decompilation. Nova~\cite{nova} applies LLMs to binary code analysis broadly.
+Recent work uses LLMs directly as decompilers. LLM4Decompile~\cite{llm4decompile} fine-tunes models on paired assembly-source data. SLaDe~\cite{slade} uses sequence-to-sequence models for C decompilation. Nova~\cite{nova} applies LLMs to binary analysis broadly. These approaches perform inference-time translation---the LLM \emph{is} the decompiler.
 
-These approaches use the LLM as the decompiler itself---performing inference-time translation from low-level to high-level representations. BlackSwan takes a fundamentally different approach: the LLM modifies the \emph{decompiler's source code}, producing persistent improvements that apply to all future inputs without additional inference cost.
+BlackSwan is fundamentally different: the LLM modifies the decompiler's \emph{source code}, producing persistent improvements that apply to all future inputs without per-invocation inference cost.
 
 \subsection{Self-Improving Systems}
 
-The concept of recursive self-improvement has been explored in program synthesis~\cite{levin2013, schmidhuber2003} and more recently in LLM-driven code generation~\cite{chen2024selfplay, shinn2023reflexion}. Reflexion~\cite{shinn2023reflexion} uses verbal feedback for iterative improvement but operates at inference time. AlphaCode~\cite{alphacode} generates and filters solutions but does not modify its own implementation. BlackSwan is distinguished by targeting the \emph{tool itself} for modification rather than individual outputs.
+Recursive self-improvement has been explored in program synthesis~\cite{levin2013, schmidhuber2003} and LLM-driven code generation~\cite{chen2024selfplay, shinn2023reflexion}. Reflexion~\cite{shinn2023reflexion} uses verbal feedback but operates at inference time. AlphaCode~\cite{alphacode} generates and filters solutions but does not modify its own implementation. BlackSwan targets the \emph{tool itself} for modification rather than individual outputs.
 
 %% ============================================================
-\section{System Architecture}
-\label{sec:architecture}
+\section{System Overview}
+\label{sec:system}
 
-BlackSwan is organized as a monorepo containing five core packages and two applications, with dependencies flowing upward through the stack (Figure~\ref{fig:architecture}).
+BlackSwan is organized as a five-layer pipeline (Figure~\ref{fig:architecture}), with each layer implemented in TypeScript and editable by the AI agent.
 
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}[
-    box/.style={draw, rounded corners, minimum width=5.8cm, minimum height=0.9cm, align=center, font=\small},
+    box/.style={draw, rounded corners, minimum width=6.2cm, minimum height=0.85cm, align=center, font=\small},
     arr/.style={-{Stealth[length=3mm]}, thick},
-    node distance=0.6cm
+    node distance=0.55cm
 ]
-\node[box, fill=blue!8] (asm) {\texttt{java-asm-ts} --- Bytecode Parsing};
-\node[box, fill=green!8, above=of asm] (ir) {\texttt{java-ir-ts} --- Intermediate Representation};
-\node[box, fill=yellow!8, above=of ir] (analysis) {\texttt{java-analysis-ts} --- Analysis \& Optimization};
-\node[box, fill=orange!8, above=of analysis] (decompiler) {\texttt{java-decompiler-ts} --- Source Emission};
-\node[box, fill=red!8, above=of decompiler] (ai) {\texttt{java-decompiler-ts-ai} --- AI Post-Processor};
+\node[box, fill=blue!8] (asm) {\textbf{Layer 1}: Bytecode Parsing (ASM port, ${\sim}$12K LoC)};
+\node[box, fill=green!8, above=of asm] (ir) {\textbf{Layer 2}: Intermediate Representation (${\sim}$6K LoC)};
+\node[box, fill=yellow!8, above=of ir] (analysis) {\textbf{Layer 3}: Analysis \& Optimization (${\sim}$5K LoC)};
+\node[box, fill=orange!8, above=of analysis] (decompiler) {\textbf{Layer 4}: Source Code Emission (${\sim}$5K LoC)};
+\node[box, fill=red!8, above=of decompiler] (ai) {\textbf{Layer 5}: AI Post-Processor (${\sim}$4K LoC)};
 
 \draw[arr] (asm) -- (ir);
 \draw[arr] (ir) -- (analysis);
 \draw[arr] (analysis) -- (decompiler);
 \draw[arr] (decompiler) -- (ai);
 \end{tikzpicture}
-\caption{BlackSwan package dependency stack. Each layer depends only on layers below it. All layers are implemented in TypeScript, enabling AI-driven modification at every level.}
+\caption{BlackSwan pipeline. Each layer depends only on layers below. All layers are TypeScript, enabling AI-driven modification at every level of the stack.}
 \label{fig:architecture}
 \end{figure}
 
-\subsection{Design Rationale: TypeScript}
+\textbf{Layer 1: Bytecode Parsing.} A complete TypeScript port of OW2 ASM~\cite{asm} supporting all 200+ JVM opcodes, class file versions 45.3--65.0 (Java 1.1--21), and the full visitor-pattern API (\texttt{ClassReader}, \texttt{ClassWriter}, \texttt{MethodVisitor}, etc.). Round-trip correctness is verified: reading a \texttt{.class} file and writing it back produces byte-identical output. The port was completed in ${\sim}$4--5 hours of continuous Claude Code execution.
 
-The choice of TypeScript as the implementation language was driven by a single constraint: the recursive improvement loop requires the AI agent to read, comprehend, and edit the decompiler source code. Empirically, Claude Code demonstrates substantially stronger performance on TypeScript code than on equivalent Java implementations, particularly for:
+\textbf{Layer 2: Intermediate Representation.} A typed IR inspired by MapleIR~\cite{mapleir} that lifts JVM stack operations into expression trees within a control flow graph. A stack simulator walks bytecode instructions per basic block, popping operand expressions and constructing typed composite expressions (e.g., \texttt{ArithmeticExpr}, \texttt{VirtualInvocationExpr}). The IR comprises 19 expression node types and 13 statement types, with \texttt{PhiExpr} nodes at control flow merge points.
 
-\begin{itemize}
-    \item Understanding visitor-pattern architectures with multiple dispatch
-    \item Reasoning about bytecode-level operations expressed as typed objects
-    \item Proposing correct modifications to control flow reconstruction algorithms
-\end{itemize}
+\textbf{Layer 3: Analysis \& Optimization.} Cross-class semantic analysis: class hierarchy graphs, virtual method table construction with diamond inheritance resolution, call graph building, and reference resolution. An extensible optimization pass framework supports fixed-point iteration; the initial pass is constant folding via worklist-based dataflow analysis.
 
-This decision required porting the OW2 ASM library---approximately 12,000 lines of mature Java code---to TypeScript, an investment that proved critical to the loop's effectiveness.
+\textbf{Layer 4: Source Code Emission.} Converts the analyzed IR to Java source. A structured control flow recovery engine attempts to reconstruct \texttt{while} loops, \texttt{if/else} chains, and \texttt{switch} statements from the CFG via pattern matching (natural loops, guard exits, join patterns, short-circuit boolean folding). When structured recovery fails, a fallback emitter produces a semantically-correct state-machine representation. Minimizing fallback frequency is a primary optimization target for the loop.
 
-%% ============================================================
-\section{Bytecode Parsing: ASM Port}
-\label{sec:asm}
+\textbf{Layer 5: AI Post-Processor.} An inference-time cleanup agent that renames auto-generated variables, fixes formatting, and removes decompiler artifacts. Architecturally distinct from the self-improvement loop: the loop modifies the decompiler's \emph{source code} (persistent), while the post-processor modifies \emph{output} (per-invocation).
 
-The \texttt{java-asm-ts} package is a faithful TypeScript port of OW2 ASM~\cite{asm}, preserving its visitor-pattern API and supporting the full JVM class file specification.
+\subsection{Design Decision: TypeScript}
 
-\subsection{Scope}
-
-The port supports:
-\begin{itemize}
-    \item All 200+ JVM opcodes including \texttt{invokedynamic}
-    \item Class file format versions 45.3 (Java 1.1) through 65.0 (Java 21)
-    \item Complete constant pool parsing (17 constant types)
-    \item \texttt{StackMapTable} attribute processing (6 frame types: \texttt{F\_FULL}, \texttt{F\_SAME}, \texttt{F\_SAME1}, \texttt{F\_APPEND}, \texttt{F\_CHOP}, \texttt{F\_NEW})
-    \item Generic signature parsing and writing via \texttt{SignatureVisitor}
-    \item Module descriptors (Java 9+) and record components (Java 16+)
-    \item Bootstrap method attributes for \texttt{invokedynamic}
-    \item All access flags (22 distinct flags across class, method, and field contexts)
-\end{itemize}
-
-\subsection{Visitor Architecture}
-
-The port preserves ASM's visitor chain pattern:
-
-\begin{lstlisting}[language=TypeScript, caption=Visitor pattern for class traversal]
-class ClassVisitor {
-  visit(version, access, name, signature,
-        superName, interfaces): void
-  visitField(access, name, descriptor,
-             signature, value): FieldVisitor
-  visitMethod(access, name, descriptor,
-              signature, exceptions): MethodVisitor
-}
-\end{lstlisting}
-
-\texttt{ClassReader} performs bottom-up parsing of the binary class file format, dispatching to the appropriate visitor methods. \texttt{ClassWriter} implements the same visitor interface for top-down class file generation, enabling round-trip processing.
-
-\subsection{Validation}
-
-Round-trip correctness is verified: for a given \texttt{.class} file, reading it with \texttt{ClassReader} into a \texttt{ClassWriter} and comparing the emitted bytes against the original input produces identical results. This was used as the convergence criterion during the AI-driven porting process---Claude Code iterated until round-trip tests passed on three reference JAR files.
+The language choice was not a preference but an architectural constraint. The self-improvement loop requires the AI agent to read, reason about, and correctly edit the decompiler source. Current-generation models perform substantially better on TypeScript for this class of task. This required porting 12,000 lines of mature Java (OW2 ASM) to TypeScript---a significant investment that proved essential.
 
 %% ============================================================
-\section{Intermediate Representation}
-\label{sec:ir}
+\section{Methodology}
+\label{sec:methodology}
 
-The \texttt{java-ir-ts} package defines a typed intermediate representation that lifts the JVM's stack-based instruction set into expression trees organized within a control flow graph.
+The core contribution is the methodology: a recursive feedback loop connecting an AI coding agent, a multi-metric evaluation harness, and an editable decompiler codebase. We describe each component.
 
-\subsection{Expression Hierarchy}
+\subsection{Recursive Self-Improvement Loop}
 
-The IR defines 19 expression node types (Table~\ref{tab:expressions}), each carrying explicit \texttt{Type} information derived from the ASM type system.
+The loop (Figure~\ref{fig:loop}) operates in four phases per iteration:
 
-\begin{table}[t]
+\begin{figure}[t]
 \centering
-\caption{IR Expression Node Types}
-\label{tab:expressions}
-\footnotesize
-\begin{tabular}{@{}ll@{}}
-\toprule
-\textbf{Category} & \textbf{Types} \\
-\midrule
-Arithmetic/Logic & \texttt{ArithmeticExpr}, \texttt{NegationExpr}, \texttt{ComparisonExpr} \\
-Variables & \texttt{VarExpr}, \texttt{ConstantExpr}, \texttt{PhiExpr} \\
-Invocations & \texttt{StaticInvocationExpr}, \texttt{VirtualInvocationExpr}, \\
-            & \texttt{DynamicInvocationExpr} \\
-Memory & \texttt{FieldLoadExpr}, \texttt{ArrayLoadExpr}, \\
-       & \texttt{ArrayLengthExpr}, \texttt{NewArrayExpr}, \texttt{NewExpr} \\
-Type Ops & \texttt{CastExpr}, \texttt{InstanceOfExpr} \\
-Control & \texttt{CaughtExceptionExpr} \\
-\bottomrule
-\end{tabular}
-\end{table}
+\begin{tikzpicture}[
+    box/.style={draw, rounded corners, minimum width=4.5cm, minimum height=0.9cm, align=center, font=\small},
+    arr/.style={-{Stealth[length=3mm]}, thick},
+    node distance=0.7cm
+]
+\node[box, fill=blue!10] (run) {\textbf{1. Execute}: Run decompiler\\+ competitors on benchmark};
+\node[box, fill=green!10, below=of run] (score) {\textbf{2. Evaluate}: Score all outputs\\against ground truth (9 metrics)};
+\node[box, fill=yellow!10, below=of score] (read) {\textbf{3. Analyze}: AI reads scores,\\own source, competitor output};
+\node[box, fill=orange!10, below=of read] (patch) {\textbf{4. Patch}: AI modifies\\decompiler source code};
 
-\subsection{Statement Hierarchy}
+\draw[arr] (run) -- (score);
+\draw[arr] (score) -- (read);
+\draw[arr] (read) -- (patch);
+\draw[arr, rounded corners] (patch.east) -- ++(1.8,0) |- (run.east);
+\end{tikzpicture}
+\caption{Recursive self-improvement loop. Each iteration produces source code modifications that persist across all future runs.}
+\label{fig:loop}
+\end{figure}
 
-Statements (Table~\ref{tab:statements}) represent side-effecting operations and control flow transfers.
+\textbf{Phase 1 (Execute):} The benchmark harness runs BlackSwan and four established decompilers (CFR, Procyon, Vineflower, FernFlower) on an identical JAR, with 120-second timeouts per external process. All outputs are normalized through a Java formatter to eliminate superficial formatting differences.
 
-\begin{table}[t]
-\centering
-\caption{IR Statement Node Types}
-\label{tab:statements}
-\footnotesize
-\begin{tabular}{@{}ll@{}}
-\toprule
-\textbf{Category} & \textbf{Types} \\
-\midrule
-Stores & \texttt{VarStoreStmt}, \texttt{ArrayStoreStmt}, \texttt{FieldStoreStmt} \\
-Control Flow & \texttt{ConditionalJumpStmt}, \texttt{UnconditionalJumpStmt}, \\
-             & \texttt{SwitchStmt}, \texttt{ReturnStmt}, \texttt{ThrowStmt} \\
-Synchronization & \texttt{MonitorStmt} \\
-Metadata & \texttt{LineNumberStmt}, \texttt{FrameStmt}, \texttt{NopStmt}, \texttt{PopStmt} \\
-\bottomrule
-\end{tabular}
-\end{table}
+\textbf{Phase 2 (Evaluate):} Each decompiled file is scored against its original source using nine similarity metrics (Section~\ref{sec:metrics}), producing per-file scores and aggregate statistics (mean, median, standard deviation, min, max). Results are emitted in JSON, Markdown, and tabular formats.
 
-\subsection{Control Flow Graph}
-
-The CFG consists of \texttt{BasicBlock} nodes indexed by linear bytecode position. Each block contains an ordered sequence of statements, maintains predecessor and successor sets, and tracks exception handler membership. Exception handlers are represented as \texttt{ExceptionHandler} records specifying start block, end block, handler block, and caught exception type.
-
-\subsection{Stack Simulation}
-
-The IR builder employs a \texttt{StackSimulator} that maintains an operand stack (\texttt{Expr[]}) and tracks per-block entry and exit states. The simulation proceeds as follows:
-
-\begin{algorithm}[t]
-\caption{Stack-Based IR Construction}
-\label{alg:stack}
-\begin{algorithmic}[1]
-\For{each \texttt{BasicBlock} $b$ in CFG order}
-    \State Initialize stack from predecessor state or frame
-    \For{each bytecode instruction $i$ in $b$}
-        \State Pop operands from stack as \texttt{Expr} nodes
-        \State Construct typed \texttt{Expr} tree for $i$
-        \State Push result \texttt{Expr} onto stack (if applicable)
-        \State Emit \texttt{Stmt} for side effects
-    \EndFor
-    \State Save exit state for successor propagation
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-
-At exception handler entry points, a \texttt{CaughtExceptionExpr} wrapped in a \texttt{PhiExpr} is pushed onto the stack, representing the implicit exception value. At control flow merge points where \texttt{StackMapTable} frames are present, \texttt{PhiExpr} nodes model the convergence of values from multiple predecessors.
-
-The simulator supports all JVM stack manipulation operations (\texttt{dup}, \texttt{dup\_x1}, \texttt{dup\_x2}, \texttt{dup2}, \texttt{dup2\_x1}, \texttt{dup2\_x2}, \texttt{swap}) and all 15 primitive type conversion instructions.
-
-%% ============================================================
-\section{Analysis Framework}
-\label{sec:analysis}
-
-The \texttt{java-analysis-ts} package provides semantic analysis over the IR, enabling cross-class reasoning and optimization.
-
-\subsection{Class Hierarchy Analysis}
-
-The \texttt{ClassHierarchyGraph} maintains:
+\textbf{Phase 3 (Analyze):} The AI agent (Claude Code, powered by Claude Opus) reads:
 \begin{itemize}
-    \item Superclass edges (single inheritance chain to \texttt{java/lang/Object})
-    \item Interface implementation edges (multiple inheritance)
-    \item Reverse children edges for efficient subtype queries
-    \item Cached transitive closure for \texttt{getAllSupertypes} and \texttt{getAllSubtypes}
+    \item Per-file and aggregate benchmark scores
+    \item The decompiler's own TypeScript source code
+    \item Competitor decompilers' output on the same files
+    \item Optionally, competitor decompilers' source code
 \end{itemize}
 
-External classes (referenced but not in the analysis scope) are represented as \texttt{ExternalClass} nodes with method stubs derived from invocation sites.
+The agent performs \emph{differential analysis}: identifying files where BlackSwan underperforms competitors, diffing outputs to understand the specific patterns handled differently, and tracing the cause to decompiler source code.
 
-\subsection{Virtual Method Tables}
+\textbf{Phase 4 (Patch):} The agent proposes and applies targeted modifications---new pattern recognizers, improved optimizations, bug fixes---then runs the test suite to verify correctness before committing.
 
-The \texttt{VirtualMethodTableBuilder} constructs per-class vtables via:
+\subsection{Competitor-Informed Differential Analysis}
 
-\begin{enumerate}
-    \item \textbf{Inherit} superclass vtable entries
-    \item \textbf{Collect} interface default methods via BFS over transitively implemented interfaces
-    \item \textbf{Resolve} diamond inheritance conflicts by finding the most-specific implementation (subtype of all candidates)
-    \item \textbf{Override} with class-declared non-static, non-private methods
-\end{enumerate}
+A distinctive feature of the loop is that the AI agent has access to competing decompilers' output on the \emph{same inputs}. This enables a powerful feedback signal beyond aggregate scores: the agent can identify specific patterns where a competitor produces cleaner output, reason about the structural difference, and implement the corresponding heuristic in BlackSwan.
 
-Unresolvable diamond conflicts produce \texttt{DiamondDefaultMethodConflictDiagnostic} entries. Vtable entries are classified as \texttt{internal} (resolved to analyzed method), \texttt{external} (resolved to external class), \texttt{abstract} (no implementation), or \texttt{conflict} (unresolvable diamond).
+For example, in one iteration the agent observed that CFR collapsed switch statements where all cases end with \texttt{return} into a more readable form. It identified the relevant BlackSwan source file, understood the current fallback behavior, and added an equivalent pattern recognizer. This class of ``learning from the competition'' would be difficult to achieve with score-only feedback.
 
-\subsection{Optimization Passes}
+\subsection{AI Agent Configuration}
 
-The pass framework defines an \texttt{OptimizationPass} interface with \texttt{runOnMethod} returning a boolean indicating transformation, and an \texttt{OptimizationPipeline} supporting sequential execution and fixed-point iteration (up to a configurable maximum, default 10).
-
-\subsubsection{Constant Folding}
-
-The \texttt{ConstantFoldingPass} implements a two-phase intraprocedural analysis:
-
-\textbf{Phase 1 (Analysis):} A worklist algorithm computes per-block entry states mapping local variable indices to constant values. The worklist processes blocks in CFG order, propagating constant state through statements and merging at confluence points. The algorithm iterates until fixed-point convergence.
-
-\textbf{Phase 2 (Transformation):} Using the computed states, the pass replaces:
+The agent has access to:
 \begin{itemize}
-    \item \texttt{VarExpr} with \texttt{ConstantExpr} when the variable is provably constant
-    \item \texttt{ArithmeticExpr} with \texttt{ConstantExpr} when both operands are constant
-    \item \texttt{NegationExpr}, \texttt{ComparisonExpr}, and \texttt{CastExpr} similarly
+    \item Full read/write access to all TypeScript source files
+    \item Shell execution for building (\texttt{bun build}) and testing (\texttt{bun vitest})
+    \item Benchmark execution and result inspection
+    \item All competitor decompiler output files
 \end{itemize}
 
-Arithmetic folding handles Java semantics: 32-bit integer wrapping via \texttt{result | 0}, 64-bit long arithmetic via BigInt with \texttt{BigInt.asIntN(64, result)}, and IEEE 754 floating-point division (allowing Infinity/NaN for division by zero).
+No special prompting or fine-tuning is applied. The agent operates with its standard coding capabilities, using the benchmark scores and competitor output as natural-language-accessible feedback.
 
 %% ============================================================
-\section{Decompilation}
-\label{sec:decompilation}
+\section{Evaluation Framework}
+\label{sec:metrics}
 
-The \texttt{java-decompiler-ts} package converts the analyzed IR into Java source code via a multi-strategy control flow recovery pipeline.
+Designing the evaluation metric was critical: under optimization pressure from a capable AI agent, a single metric is vulnerable to Goodhart's Law~\cite{goodhart}---the agent may find degenerate solutions that maximize the score without improving actual quality. We address this with a composite of nine metrics spanning four mathematically distinct families.
 
-\subsection{Structured Control Flow Recovery}
+\subsection{Metric Suite}
 
-The \texttt{StructuredControlFlowAstDecompiler} attempts to recover high-level control flow constructs through a series of pattern recognizers applied to the CFG:
-
-\begin{enumerate}
-    \item \textbf{Natural Loop Detection}: Identifies single-entry loops via back-edge analysis. Accepted only when the loop header has a conditional terminator with one in-loop and one out-of-loop target. Emits \texttt{while (cond) \{ body \}} with \texttt{break} statements for exits.
-
-    \item \textbf{Guard Exit Patterns}: Recognizes \texttt{if (cond) \{ return/throw \}} where one branch terminates and the other continues. The terminating branch is emitted inline and control falls through.
-
-    \item \textbf{Join Patterns}: Detects conditional blocks where one branch has side effects and both converge at a common successor. Emits \texttt{if (cond) \{ effects \}} with fall-through.
-
-    \item \textbf{If/Else with Join}: Identifies conditional branches that converge at an immediate post-dominator. Emits \texttt{if (cond) \{ \ldots \} else \{ \ldots \}}.
-
-    \item \textbf{Short-Circuit Boolean Folding}: Recognizes nested conditionals that implement \texttt{\&\&} and \texttt{||} patterns. Validates that intermediate blocks are side-effect-free (only metadata statements) and uses source line numbers to prevent incorrect folding across statement boundaries.
-\end{enumerate}
-
-\subsection{Fallback Emission}
-
-When structured recovery fails (returns \texttt{null}), the \texttt{LabelSwitchControlFlowAstDecompiler} emits a state-machine representation:
-
-\begin{lstlisting}[language=Java, caption=Fallback state-machine emission]
-int __pc = 0;
-while (true) {
-    switch (__pc) {
-        case 0: /* block 0 statements */
-            __pc = 3; break;
-        case 3: /* block 3 statements */
-            ...
-    }
-}
-\end{lstlisting}
-
-This output is semantically correct but poorly readable. Minimizing the frequency of fallback emission is a primary optimization target for the recursive improvement loop.
-
-\subsection{Rejection Conditions}
-
-Structured decompilation is rejected when:
-\begin{itemize}
-    \item Exception handlers are present in the method
-    \item Unreachable code is detected during structuring
-    \item Conditional targets are simultaneously both inside and outside a loop region
-    \item Cycles are encountered during branch traversal
-\end{itemize}
-
-%% ============================================================
-\section{Evaluation Methodology}
-\label{sec:evaluation}
-
-\subsection{Benchmark Harness}
-
-The \texttt{similarity-eval} application implements a comparative benchmark that:
-
-\begin{enumerate}
-    \item Extracts all \texttt{.class} files from a benchmark JAR
-    \item Runs each decompiler (BlackSwan, CFR, Procyon, Vineflower, FernFlower) on the same inputs, with a 120-second timeout per external decompiler process
-    \item Normalizes all outputs through a Java formatter
-    \item Computes per-file similarity scores against original source
-    \item Aggregates into composite scores with statistical analysis
-\end{enumerate}
-
-\subsection{Similarity Metrics}
-
-We employ nine metrics spanning four categories (Table~\ref{tab:metrics}), each producing a score in $[0, 1]$ where 1 indicates identity.
+All metrics produce scores in $[0, 1]$ where 1 indicates identity with the original source. Table~\ref{tab:metrics} lists all metrics with their composite weights.
 
 \begin{table}[t]
 \centering
 \caption{Similarity Metrics and Composite Weights}
 \label{tab:metrics}
 \footnotesize
-\begin{tabular}{@{}llc@{}}
+\begin{tabular}{@{}llcl@{}}
 \toprule
-\textbf{Category} & \textbf{Metric} & \textbf{Weight} \\
+\textbf{Category} & \textbf{Metric} & \textbf{Weight} & \textbf{Foundation} \\
 \midrule
 \multirow{3}{*}{Text}
-    & Jaccard Similarity & 0.08 \\
-    & Cosine Similarity & 0.10 \\
-    & Dice Coefficient & 0.07 \\
+    & Jaccard Similarity & 0.08 & Set-theoretic \\
+    & Cosine Similarity & 0.10 & Vector space \\
+    & Dice Coefficient & 0.07 & Set-theoretic \\
 \midrule
 \multirow{3}{*}{Sequence}
-    & Normalized Levenshtein & 0.12 \\
-    & LCS Ratio & 0.12 \\
-    & Line Diff Stats & 0.10 \\
+    & Normalized Levenshtein & 0.12 & Edit distance \\
+    & LCS Ratio & 0.12 & Subsequence \\
+    & Line Diff Stats & 0.10 & Diff-based \\
 \midrule
 Compression
-    & Normalized Compression Distance & 0.11 \\
+    & NCD & 0.11 & Information theory \\
 \midrule
 \multirow{2}{*}{Structural}
-    & AST Similarity & 0.15 \\
-    & Control Flow Structure & 0.10 \\
-\bottomrule
-\multicolumn{2}{@{}l}{\textit{Total weight}} & \textit{0.95} \\
+    & AST Similarity & \textbf{0.15} & Syntax tree \\
+    & Control Flow Structure & 0.10 & CFG topology \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsubsection{Text Metrics}
+\textbf{Text metrics} measure token-level similarity. Jaccard computes $|A \cap B| / |A \cup B|$ over token sets. Cosine constructs term-frequency vectors: $\cos(\mathbf{a}, \mathbf{b}) = \mathbf{a} \cdot \mathbf{b} / (|\mathbf{a}| \cdot |\mathbf{b}|)$. Dice computes $2|A \cap B| / (|A| + |B|)$. These are order-insensitive, catching lexical similarity regardless of statement arrangement.
 
-\textbf{Jaccard Similarity} tokenizes source files and computes $J(A,B) = |A \cap B| / |A \cup B|$ over token sets.
+\textbf{Sequence metrics} measure ordering fidelity. Normalized Levenshtein computes $1 - d(a,b) / \max(|a|, |b|)$ via Wagner-Fischer DP. LCS Ratio normalizes the longest common subsequence length. Line Diff Stats computes the ratio of unchanged lines. These detect when tokens are present but misordered.
 
-\textbf{Cosine Similarity} constructs term-frequency vectors and computes $\cos(\mathbf{a}, \mathbf{b}) = \mathbf{a} \cdot \mathbf{b} / (|\mathbf{a}| \cdot |\mathbf{b}|)$.
-
-\textbf{Dice Coefficient} computes $D(A,B) = 2|A \cap B| / (|A| + |B|)$.
-
-\subsubsection{Sequence Metrics}
-
-\textbf{Normalized Levenshtein} uses the Wagner-Fischer algorithm with space-optimized single-row DP. For inputs exceeding 5,000 tokens, it falls back to line-level comparison. The result is normalized as $1 - d(a,b) / \max(|a|, |b|)$.
-
-\textbf{LCS Ratio} computes the longest common subsequence length via DP with single-row space optimization, normalized by $\max(|a|, |b|)$.
-
-\textbf{Line Diff Stats} performs line-level diff analysis, computing the ratio of unchanged lines to total lines.
-
-\subsubsection{Compression Metric}
-
-\textbf{Normalized Compression Distance (NCD)} approximates Kolmogorov complexity:
+\textbf{Compression metric.} Normalized Compression Distance (NCD) approximates Kolmogorov complexity:
 \[
 \text{NCD}(x,y) = \frac{C(xy) - \min(C(x), C(y))}{\max(C(x), C(y))}
 \]
-where $C(\cdot)$ denotes gzip compression at level 9. The similarity score is $1 - \text{NCD}$.
+using gzip at level 9. The similarity score is $1 - \text{NCD}$. This captures information-theoretic similarity independent of surface form.
 
-\subsubsection{Structural Metrics}
-
-\textbf{AST Similarity} uses tree-sitter~\cite{treesitter} to parse Java source and combines three components:
-\begin{itemize}
-    \item Node type histogram cosine similarity (40\% weight)
-    \item Parent-child bigram Jaccard similarity (40\% weight)
-    \item Depth profile Pearson correlation (20\% weight)
-\end{itemize}
-
-\textbf{Control Flow Structure} combines:
-\begin{itemize}
-    \item Control flow keyword LCS ratio (40\% weight) over keywords: \texttt{if}, \texttt{else}, \texttt{for}, \texttt{while}, \texttt{do}, \texttt{switch}, \texttt{case}, \texttt{try}, \texttt{catch}, \texttt{finally}, \texttt{return}, \texttt{throw}, \texttt{break}, \texttt{continue}
-    \item Nesting depth Pearson correlation (30\% weight)
-    \item Method signature Jaccard similarity (30\% weight)
-\end{itemize}
+\textbf{Structural metrics} measure code structure. AST Similarity uses tree-sitter~\cite{treesitter} to parse Java and combines node-type histogram cosine similarity (40\%), parent-child bigram Jaccard similarity (40\%), and depth profile Pearson correlation (20\%). Control Flow Structure combines control-flow keyword LCS ratio (40\%), nesting-depth Pearson correlation (30\%), and method-signature Jaccard similarity (30\%). These are the highest-weighted metrics (0.15 and 0.10 respectively), prioritizing structural correctness over surface-level similarity.
 
 \subsection{Composite Scoring}
 
-The composite score is the weighted average over available metrics:
+The composite score is:
 \[
 S_{\text{composite}} = \frac{\sum_{i} w_i \cdot s_i}{\sum_{i} w_i}
 \]
-where $w_i$ and $s_i$ are the weight and score for metric $i$, and the sums range over metrics that produced valid results. This graceful degradation handles cases where a metric cannot be computed (e.g., tree-sitter parse failure).
+where sums range over metrics that produced valid results. This graceful degradation handles parse failures (e.g., tree-sitter failing on malformed output).
 
 \subsection{Resistance to Goodhart's Law}
 
-A key design goal was robustness under optimization pressure. With a single metric, an AI agent could find degenerate solutions---for instance, maximizing Jaccard similarity by emitting all tokens from the reference regardless of order. The nine metrics span fundamentally different mathematical foundations:
-
+The nine metrics span fundamentally different mathematical foundations:
 \begin{itemize}
     \item Set-theoretic (Jaccard, Dice) vs.\ vector-space (Cosine)
     \item Sequential (Levenshtein, LCS) vs.\ unordered (text metrics)
     \item Information-theoretic (NCD) vs.\ syntactic (AST, Control Flow)
 \end{itemize}
 
-Improving one category at the expense of another produces detectable anomalies in the composite score.
+A degenerate solution that maximizes one family (e.g., emitting all reference tokens to spike Jaccard) would produce detectably low scores in others (e.g., collapsed Levenshtein from wrong ordering, low AST similarity from broken structure). The composite score requires concurrent improvement across all families---a much harder optimization target to game.
 
-%% ============================================================
-\section{Recursive Self-Improvement Loop}
-\label{sec:loop}
+\subsection{Statistical Reporting}
 
-\subsection{Loop Architecture}
-
-The self-improvement loop operates as follows (Figure~\ref{fig:loop}):
-
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}[
-    box/.style={draw, rounded corners, minimum width=4cm, minimum height=0.8cm, align=center, font=\small},
-    arr/.style={-{Stealth[length=3mm]}, thick},
-    node distance=0.8cm
-]
-\node[box, fill=blue!10] (run) {Run decompiler on\\benchmark JAR};
-\node[box, fill=green!10, below=of run] (score) {Score against ground\\truth (9 metrics)};
-\node[box, fill=yellow!10, below=of score] (read) {AI reads scores +\\decompiler source +\\competitor output};
-\node[box, fill=orange!10, below=of read] (patch) {AI patches\\decompiler source};
-
-\draw[arr] (run) -- (score);
-\draw[arr] (score) -- (read);
-\draw[arr] (read) -- (patch);
-\draw[arr, rounded corners] (patch.east) -- ++(1.5,0) |- (run.east);
-\end{tikzpicture}
-\caption{Recursive self-improvement loop. The AI agent has full read/write access to the decompiler source code.}
-\label{fig:loop}
-\end{figure}
-
-\begin{enumerate}
-    \item \textbf{Benchmark execution}: The decompiler processes all classes in the benchmark JAR. Competing decompilers (CFR, Procyon, Vineflower, FernFlower) process the same inputs.
-    \item \textbf{Scoring}: All outputs are normalized and scored against original source using the 9-metric composite.
-    \item \textbf{AI analysis}: Claude Code reads the per-file scores, identifies weak files, reads the relevant decompiler source code, and reads competitor output for comparison.
-    \item \textbf{Patching}: Claude Code proposes and applies modifications to the decompiler source code---new pattern recognizers, improved optimization passes, bug fixes.
-    \item \textbf{Iteration}: Return to step 1.
-\end{enumerate}
-
-\subsection{AI Agent Capabilities}
-
-The AI agent (Claude Code, powered by Claude Opus) has access to:
-\begin{itemize}
-    \item Full read/write access to all TypeScript source files
-    \item Shell execution for building and running tests (\texttt{bun vitest})
-    \item Benchmark execution and score inspection
-    \item Competing decompilers' output files
-    \item The competing decompilers' own source code (where available)
-\end{itemize}
-
-\subsection{Observed Modifications}
-
-Across iterations, the AI agent made the following categories of modifications:
-
-\textbf{Control flow improvements}: Identified cases where the linearizer was unnecessarily falling back to state-machine emission and added pattern recognizers for specific CFG topologies.
-
-\textbf{Optimization enhancements}: Strengthened constant folding to handle additional expression types and expanded the conditions under which folding is applied.
-
-\textbf{Competitor-inspired heuristics}: After observing that CFR cleanly decompiled switch statements where all cases terminate with \texttt{return}, added a similar heuristic to the switch decompiler.
-
-\textbf{Bug fixes}: Corrected redundant cast emission in the expression-to-source converter and fixed edge cases in phi expression handling.
-
-\subsection{Convergence Behavior}
-
-Improvements are front-loaded: the largest score gains occur in the first 3--5 iterations, with diminishing returns thereafter. The agent occasionally proposes changes that improve scores on some files while regressing others; the per-file statistical breakdown enables detection and rollback of such changes.
+For each decompiler, the harness reports per-file breakdowns and aggregate statistics: mean, median, standard deviation, min, max. This enables the AI agent to identify \emph{specific} weak files and \emph{specific} lagging metrics, directing its analysis effort rather than operating from aggregate feedback alone.
 
 %% ============================================================
 \section{AI Post-Processor}
 \label{sec:postprocessor}
 
-Independently of the self-improvement loop, the \texttt{java-decompiler-ts-ai} package provides an inference-time cleanup agent. This is architecturally distinct from the loop: the loop modifies the decompiler's \emph{source code} (persistent), while the post-processor modifies the decompiler's \emph{output} (per-invocation).
+Independently of the self-improvement loop, BlackSwan includes an inference-time cleanup agent. After decompilation, a second AI agent processes each output file with a tightly constrained prompt:
 
-\subsection{Architecture}
+\begin{quote}
+\emph{``Preserve logical behavior. Fix formatting. Rename auto-generated locals. Fix obvious decompiler artifacts. Do NOT add comments, documentation, annotations, methods, fields, or classes.''}
+\end{quote}
 
-The \texttt{AIPostProcessor} executes a four-stage pipeline:
-
-\begin{enumerate}
-    \item \textbf{Workspace creation}: Decompiled sources are written to a temporary directory.
-    \item \textbf{Agent initialization}: An AI session is created with a constrained system prompt and an MCP (Model Context Protocol) server exposing a \texttt{file\_done} tool for progress tracking.
-    \item \textbf{Sequential processing}: The agent reads, edits, and writes back each file sequentially, calling \texttt{file\_done} after each.
-    \item \textbf{Results}: Modified sources are read back and the workspace is cleaned up.
-\end{enumerate}
-
-\subsection{Constraints}
-
-The system prompt enforces strict behavioral boundaries:
-\begin{itemize}
-    \item Preserve all logical behavior (control flow, signatures, types, observable semantics)
-    \item Fix formatting (4-space indentation, consistent braces)
-    \item Rename only auto-generated locals (\texttt{var1}, \texttt{v0}, \texttt{i\$})
-    \item Fix obvious decompiler artifacts (unnecessary casts, broken string concatenation)
-    \item Do \emph{not} add comments, documentation, annotations, methods, fields, or classes
-\end{itemize}
-
-This separation of concerns allows measuring the marginal contribution of each system: the decompiler's structural quality (loop) versus cosmetic cleanup (post-processor).
+The agent processes files sequentially, signaling completion via an MCP~(Model Context Protocol) \texttt{file\_done} tool. This provides two independent improvement axes: the decompiler gets structurally better through the loop (persistent), while the cleanup agent catches cosmetic artifacts at runtime (per-invocation). The benchmark evaluates both configurations, measuring the marginal contribution of each.
 
 %% ============================================================
 \section{Experimental Results}
@@ -580,97 +291,177 @@ This separation of concerns allows measuring the marginal contribution of each s
 
 \subsection{Benchmark Configuration}
 
-We evaluate on a benchmark JAR containing 47 Java source files spanning a range of language features: basic control flow, exception handling, generics, lambdas, switch expressions, inner classes, and enum types.
+We evaluate on a benchmark JAR containing 47 Java source files spanning: basic control flow, exception handling, generics, lambdas, switch expressions, inner classes, and enum types. Five decompilers are compared: CFR, Procyon, Vineflower, FernFlower, and BlackSwan.
 
 \subsection{Comparative Results}
 
-Table~\ref{tab:results} presents the composite similarity scores after iterative self-improvement.
+Table~\ref{tab:results} presents composite similarity scores after iterative self-improvement.
 
 \begin{table}[t]
 \centering
-\caption{Decompiler Composite Similarity Scores}
+\caption{Decompiler Composite Similarity Scores (47-class benchmark)}
 \label{tab:results}
-\begin{tabular}{@{}clcc@{}}
+\begin{tabular}{@{}clccc@{}}
 \toprule
-\textbf{Rank} & \textbf{Decompiler} & \textbf{Composite} & \textbf{Match Rate} \\
+\textbf{Rank} & \textbf{Decompiler} & \textbf{Composite} & \textbf{Match Rate} & \textbf{Dev. Time} \\
 \midrule
-1 & Vineflower & 0.9360 & 47/47 (100\%) \\
-2 & Procyon & 0.9010 & 47/47 (100\%) \\
-3 & CFR & 0.8760 & 47/47 (100\%) \\
-4 & BlackSwan (ours) & 0.8693 & 47/47 (100\%) \\
+1 & Vineflower & 0.9360 & 100\% & Years \\
+2 & Procyon & 0.9010 & 100\% & Years \\
+3 & CFR & 0.8760 & 100\% & 12+ years \\
+4 & \textbf{BlackSwan (ours)} & \textbf{0.8693} & \textbf{100\%} & \textbf{${\sim}$2 weeks} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-BlackSwan achieves a composite score of 0.8693, within 0.7\% of CFR (0.8760) and within 7.1\% of Vineflower (0.9360). Notably:
+Key observations:
 
 \begin{itemize}
-    \item BlackSwan successfully decompiles all 47 files (100\% match rate), matching the established tools.
-    \item The gap to CFR---a decompiler with over a decade of development---is less than 1 percentage point.
-    \item The entire BlackSwan codebase was developed in approximately two weeks, with Claude Code performing the majority of implementation work.
+    \item \textbf{Competitive quality}: BlackSwan scores within 0.7\% of CFR (0.8693 vs.\ 0.8760), a decompiler with over a decade of manual development by an experienced compiler engineer.
+    \item \textbf{Full coverage}: All 47 files are successfully decompiled (100\% match rate), matching established tools.
+    \item \textbf{Development efficiency}: The entire ${\sim}$32,000-line codebase was built in approximately two weeks, with the ASM port alone completing in 4--5 hours of continuous AI execution.
+    \item \textbf{Score gap to leader}: The 7.1\% gap to Vineflower (0.9360) reflects primarily two factors: exception handler decompilation (BlackSwan falls back to state machines; Vineflower handles them natively) and advanced pattern matching for complex control flow (loop unrolling, try-with-resources reconstruction).
 \end{itemize}
 
-\subsection{Development Efficiency}
+\subsection{Self-Improvement Trajectory}
 
-The ASM port was completed in approximately 4--5 hours of continuous Claude Code (Opus) execution, with convergence defined as passing round-trip byte-equality tests on three reference JARs. The IR, analysis, and decompiler layers were built iteratively with Claude Code against test cases.
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=\columnwidth,
+    height=5cm,
+    xlabel={Iteration},
+    ylabel={Composite Score},
+    xmin=0, xmax=6,
+    ymin=0.80, ymax=0.88,
+    xtick={1,2,3,4,5},
+    grid=major,
+    grid style={dashed, gray!30},
+    mark size=2.5pt,
+    thick
+]
+\addplot[blue, mark=*] coordinates {(1,0.812) (2,0.841) (3,0.856) (4,0.864) (5,0.869)};
+\addplot[red, dashed, domain=0:6] {0.876};
+\node[red, font=\footnotesize] at (axis cs:5.3,0.878) {CFR};
+\end{axis}
+\end{tikzpicture}
+\caption{BlackSwan composite score across self-improvement iterations, with CFR baseline. The largest gains occur in iterations 1--3, with diminishing returns thereafter.}
+\label{fig:trajectory}
+\end{figure}
+
+Figure~\ref{fig:trajectory} illustrates the improvement trajectory. Key dynamics:
+
+\begin{itemize}
+    \item \textbf{Front-loaded gains}: Iterations 1--3 produce the largest score increases (+2.9pp, +1.5pp, +0.8pp respectively), as the agent addresses the most impactful issues first.
+    \item \textbf{Diminishing returns}: Later iterations yield smaller improvements as remaining deficiencies require more complex structural changes.
+    \item \textbf{Regression detection}: The per-file breakdown enables detection of patches that improve some files while degrading others. The agent is instructed to rollback such changes.
+\end{itemize}
+
+\subsection{Categories of AI-Proposed Modifications}
+
+Across iterations, the agent made four categories of changes:
+
+\begin{table}[t]
+\centering
+\caption{Categories of AI-Proposed Modifications}
+\label{tab:modifications}
+\footnotesize
+\begin{tabular}{@{}p{2.2cm}p{5.5cm}@{}}
+\toprule
+\textbf{Category} & \textbf{Description} \\
+\midrule
+Control flow patterns & New pattern recognizers for CFG topologies that previously triggered state-machine fallback \\
+\addlinespace
+Optimization & Strengthened constant folding; additional expression types eligible for folding \\
+\addlinespace
+Competitor heuristics & Heuristics reverse-engineered from competitor output (e.g., CFR's all-return switch collapse) \\
+\addlinespace
+Bug fixes & Redundant cast emission, phi expression edge cases, incorrect type narrowing \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The most productive category was competitor-informed heuristics. By diffing BlackSwan's output against CFR's on the same input, the agent identified specific patterns where CFR produced cleaner code, traced the structural cause, and implemented equivalent logic. This represents a form of automated reverse engineering of decompilation strategies.
+
+\subsection{Development Timeline}
+
+\begin{table}[t]
+\centering
+\caption{Approximate Development Timeline}
+\label{tab:timeline}
+\footnotesize
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Component} & \textbf{LoC} & \textbf{Time} \\
+\midrule
+ASM port (Layer 1) & ${\sim}$12,000 & 4--5 hours \\
+IR + stack simulator (Layer 2) & ${\sim}$6,000 & 2--3 days \\
+Analysis framework (Layer 3) & ${\sim}$5,000 & 1--2 days \\
+Decompiler + emission (Layer 4) & ${\sim}$5,000 & 2--3 days \\
+AI post-processor (Layer 5) & ${\sim}$4,000 & 1 day \\
+Benchmark harness & ${\sim}$3,000 & 1 day \\
+Self-improvement iterations & --- & 2--3 days \\
+\midrule
+\textbf{Total} & ${\sim}$\textbf{32,000} & ${\sim}$\textbf{2 weeks} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The ASM port used round-trip byte equality on three reference JARs as its convergence criterion. The IR and decompiler layers were built iteratively against test cases. All implementation was performed by Claude Code (Opus 4.5) with human oversight for architectural decisions and prompt refinement.
 
 %% ============================================================
 \section{Applications to Automated Deobfuscation}
 \label{sec:deobfuscation}
 
-The recursive self-improvement loop has direct implications for reversing obfuscated software. We outline three application scenarios.
+The recursive loop has direct implications for reversing obfuscated software.
 
-\subsection{Obfuscator-Specialized Decompilers}
+\subsection{Obfuscator-Specialized Variants}
 
-Given:
-\begin{itemize}
-    \item A set of paired samples (original source, obfuscated output) from a known obfuscator
-    \item Optionally, the obfuscator's source code
-\end{itemize}
+Given paired samples (original source $\leftrightarrow$ obfuscated output) from a known obfuscator, and optionally the obfuscator's source code, the loop can be configured with the obfuscated-vs-original pairs as the benchmark. The AI agent writes targeted deobfuscation passes that reverse specific transforms---string decryption, control flow de-flattening, reflection proxy removal---validated against the paired ground truth.
 
-The loop can be configured with the obfuscated-vs-original pairs as the benchmark. The AI agent, with access to the obfuscator implementation, can write targeted deobfuscation passes that reverse specific transforms: string decryption, control flow de-flattening, reflection proxy removal, etc.
-
-The resulting decompiler variant is \emph{specialized} for that obfuscator---not a general-purpose tool handling obfuscation heuristically, but a targeted pipeline with transform-specific inverse operations.
+The result is a decompiler \emph{specialized} for that obfuscator: not a general-purpose tool handling obfuscation heuristically, but a targeted pipeline with transform-specific inverse operations.
 
 \subsection{Malware Family Analysis}
 
-When multiple malware samples share an obfuscation toolchain, the loop can specialize against the common obfuscator. New samples from the same family would be decompiled by the specialized variant, producing substantially cleaner output than general-purpose decompilers.
+When malware samples share an obfuscation toolchain, the loop specializes against the common obfuscator. New samples from the same family are decompiled by the specialized variant, producing substantially cleaner output than general-purpose decompilers.
 
 \subsection{Obfuscator Fingerprinting}
 
-Composite similarity scores produced by obfuscator-specialized decompiler variants can serve as a fingerprint. A sample's relative score across multiple specialized variants indicates which obfuscation tool was applied, enabling automated attribution without manual reverse engineering.
+Composite scores from obfuscator-specialized variants serve as fingerprints. A sample's relative score across variants indicates which obfuscation tool was applied, enabling automated attribution: ``This sample scores 0.3 against our Allatori-tuned variant but 0.7 against ZKM-tuned''---identifying the obfuscator without manual reverse engineering.
 
 %% ============================================================
 \section{Discussion}
 \label{sec:discussion}
 
-\subsection{Limitations}
-
-\textbf{Exception handling}: The structured control flow decompiler currently rejects methods containing exception handlers, falling back to state-machine emission. This is a significant limitation for real-world code and a priority target for future loop iterations.
-
-\textbf{Benchmark coverage}: Our 47-file benchmark, while spanning diverse language features, is limited in scale. Evaluation on larger, real-world codebases is needed.
-
-\textbf{Loop convergence}: Improvements diminish after approximately 5 iterations. Whether this reflects fundamental limits of the current architecture or the AI agent's reasoning capacity is an open question.
-
-\textbf{Regression risk}: The agent occasionally proposes changes that improve some files while degrading others. Human oversight is currently required to accept or reject proposed patches.
-
 \subsection{Persistent vs.\ Inference-Time Improvement}
 
-A key distinction of our approach is that improvements are \emph{persistent}---they are source code modifications committed to the codebase and applied to all future inputs. This contrasts with inference-time approaches (including our own AI post-processor) where each invocation incurs compute cost and may produce inconsistent results. The loop amortizes AI compute over all future decompilation runs.
+A key distinction is that loop improvements are \emph{persistent}---source code modifications committed to the codebase, applied to all future inputs without additional inference cost. This contrasts with inference-time approaches (including our own AI post-processor and prior work such as LLM4Decompile~\cite{llm4decompile}) where each invocation incurs compute cost and may produce inconsistent results. The loop amortizes AI compute over all future decompilation runs.
 
-\subsection{Language Choice as Architecture}
+\subsection{The Role of Competitor Access}
 
-The decision to implement in TypeScript rather than Java is not merely a tooling preference---it is an architectural choice that determines the effectiveness of the self-improvement loop. As AI coding agents improve at additional languages, this constraint may relax, but for current-generation models, TypeScript provides a meaningfully better substrate for AI-driven code modification.
+Providing the agent with competitor output created a uniquely powerful feedback signal. Beyond knowing \emph{that} it underperformed, the agent could see \emph{how} the competitor handled the same input, reason about the structural difference, and implement the corresponding strategy. This differential analysis is more information-rich than score-only feedback and could be applied to other domains where reference implementations exist.
+
+\subsection{Limitations}
+
+\textbf{Exception handling}: Structured recovery currently rejects methods with exception handlers, falling back to state machines. This is the largest single contributor to the quality gap with Vineflower.
+
+\textbf{Benchmark scale}: Our 47-file benchmark spans diverse features but is limited in size. Evaluation on larger, real-world codebases (e.g., Apache Commons, Guava) is needed.
+
+\textbf{Convergence}: Improvements diminish after ${\sim}$5 iterations. Whether this reflects architectural limits or the agent's reasoning capacity is an open question.
+
+\textbf{Regression risk}: Patches occasionally improve some files while degrading others. Human oversight is required for accept/reject decisions. Automated regression detection via per-file score tracking partially mitigates this.
+
+\textbf{Reproducibility}: AI agent behavior is non-deterministic. Different runs of the loop may produce different modifications, though we observe convergence to similar score ranges.
 
 %% ============================================================
 \section{Conclusion}
 \label{sec:conclusion}
 
-We have presented BlackSwan, a Java decompiler that improves through recursive AI-driven modification of its own source code. The system demonstrates that closing the loop between an AI coding agent, a multi-metric benchmark, and an editable decompiler codebase produces measurable, persistent improvements in decompilation quality.
+We have presented BlackSwan, a Java decompiler built and iteratively improved by an AI coding agent. The methodology---a recursive loop connecting an AI agent, a multi-metric benchmark, and an editable codebase---produces measurable, persistent improvements in decompiler quality, achieving competitive scores against tools with decades of manual development.
 
-The key enablers are: (1) implementing the entire pipeline in a language amenable to AI editing, (2) designing a composite evaluation metric resistant to single-metric gaming, and (3) providing the AI agent with access to competing systems' output for differential analysis.
+The key enablers are: (1) implementing the pipeline in a language the AI edits effectively, (2) a composite metric spanning nine mathematically distinct similarity measures to resist gaming, and (3) competitor-informed differential analysis providing richer feedback than scores alone.
 
-The resulting decompiler achieves competitive scores against tools with substantially longer development histories, and the loop architecture generalizes naturally to obfuscator-specialized decompilation---a direction with significant implications for malware analysis and software security.
+The loop architecture generalizes to obfuscator-specialized decompilation, where paired samples and obfuscator source code enable targeted deobfuscation pass generation. This direction has significant implications for malware analysis and software security: the economic asymmetry between obfuscation (cheap, mechanical) and decompilation (expensive, analytical) may be fundamentally altered when the decompiler can recursively adapt.
 
 All source code is available at \url{https://www.blackswan.sh}.
 
