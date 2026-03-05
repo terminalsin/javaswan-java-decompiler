@@ -1,0 +1,38 @@
+/*
+ * Disassembled from Test5.class (originally Test5.java) by JASM
+ *
+ * Original class version: 55
+ * Signature: <no signature>
+ */
+public class Test5 {
+    // <no signature>
+    // <no exceptions>
+    public <init>()V {
+        
+        label0:
+        aload 0
+        invokespecial java/lang/Object.<init>()V
+        return
+    }
+
+
+    // <no signature>
+    // <no exceptions>
+    public static testLong()J {
+        
+        label0:
+        ldc 123456789012345L
+        lreturn
+    }
+
+
+    // <no signature>
+    // <no exceptions>
+    public static testDouble()D {
+        
+        label0:
+        ldc 3.14d
+        dreturn
+    }
+
+}

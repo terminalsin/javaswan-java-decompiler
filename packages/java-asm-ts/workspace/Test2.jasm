@@ -1,0 +1,38 @@
+/*
+ * Disassembled from Test2.class (originally Test2.java) by JASM
+ *
+ * Original class version: 55
+ * Signature: <no signature>
+ */
+public class Test2 {
+    // <no signature>
+    // <no exceptions>
+    public <init>()V {
+        
+        label0:
+        aload 0
+        invokespecial java/lang/Object.<init>()V
+        return
+    }
+
+
+    // <no signature>
+    // <no exceptions>
+    public static test1()I {
+        
+        label0:
+        iconst 0
+        ireturn
+    }
+
+
+    // <no signature>
+    // <no exceptions>
+    public static test2()I {
+        
+        label0:
+        iconst 1
+        ireturn
+    }
+
+}

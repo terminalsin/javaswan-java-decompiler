@@ -1,0 +1,74 @@
+/*
+ * Test class for type instructions (NEW, ANEWARRAY, CHECKCAST, INSTANCEOF)
+ */
+public class test/TypeInsns {
+    // NEW instruction
+    public static testNew()java/lang/Object {
+        
+        new java/lang/Object
+        dup
+        invokespecial java/lang/Object.<init>()V
+        areturn
+    }
+
+
+    public static testNewString()java/lang/String {
+        
+        new java/lang/String
+        dup
+        invokespecial java/lang/String.<init>()V
+        areturn
+    }
+
+
+    // ANEWARRAY instruction
+    public static testAnewarray(I)[java/lang/Object {
+        
+        iload 0
+        anewarray java/lang/Object
+        areturn
+    }
+
+
+    public static testAnewarrayString(I)[java/lang/String {
+        
+        iload 0
+        anewarray java/lang/String
+        areturn
+    }
+
+
+    // CHECKCAST instruction
+    public static testCheckcast(java/lang/Object)java/lang/String {
+        
+        aload 0
+        checkcast java/lang/String
+        areturn
+    }
+
+
+    public static testCheckcastList(java/lang/Object)java/util/List {
+        
+        aload 0
+        checkcast java/util/List
+        areturn
+    }
+
+
+    // INSTANCEOF instruction
+    public static testInstanceof(java/lang/Object)I {
+        
+        aload 0
+        instanceof java/lang/String
+        ireturn
+    }
+
+
+    public static testInstanceofList(java/lang/Object)I {
+        
+        aload 0
+        instanceof java/util/List
+        ireturn
+    }
+
+}

@@ -1,0 +1,164 @@
+/*
+ * Test class for array load/store instructions
+ */
+public class test/ArrayInsns {
+    // IALOAD/IASTORE
+    public static testIaload([I, I)I {
+        
+        aload 0
+        iload 1
+        iaload
+        ireturn
+    }
+
+
+    public static testIastore([I, I, I)V {
+        
+        aload 0
+        iload 1
+        iload 2
+        iastore
+        return
+    }
+
+
+    // LALOAD/LASTORE
+    public static testLaload([J, I)J {
+        
+        aload 0
+        iload 1
+        laload
+        lreturn
+    }
+
+
+    public static testLastore([J, I, J)V {
+        
+        aload 0
+        iload 1
+        lload 2
+        lastore
+        return
+    }
+
+
+    // FALOAD/FASTORE
+    public static testFaload([F, I)F {
+        
+        aload 0
+        iload 1
+        faload
+        freturn
+    }
+
+
+    public static testFastore([F, I, F)V {
+        
+        aload 0
+        iload 1
+        fload 2
+        fastore
+        return
+    }
+
+
+    // DALOAD/DASTORE
+    public static testDaload([D, I)D {
+        
+        aload 0
+        iload 1
+        daload
+        dreturn
+    }
+
+
+    public static testDastore([D, I, D)V {
+        
+        aload 0
+        iload 1
+        dload 2
+        dastore
+        return
+    }
+
+
+    // AALOAD/AASTORE
+    public static testAaload([java/lang/Object, I)java/lang/Object {
+        
+        aload 0
+        iload 1
+        aaload
+        areturn
+    }
+
+
+    public static testAastore([java/lang/Object, I, java/lang/Object)V {
+        
+        aload 0
+        iload 1
+        aload 2
+        aastore
+        return
+    }
+
+
+    // BALOAD/BASTORE (byte/boolean)
+    public static testBaload([B, I)I {
+        
+        aload 0
+        iload 1
+        baload
+        ireturn
+    }
+
+
+    public static testBastore([B, I, I)V {
+        
+        aload 0
+        iload 1
+        iload 2
+        bastore
+        return
+    }
+
+
+    // CALOAD/CASTORE (char)
+    public static testCaload([C, I)I {
+        
+        aload 0
+        iload 1
+        caload
+        ireturn
+    }
+
+
+    public static testCastore([C, I, I)V {
+        
+        aload 0
+        iload 1
+        iload 2
+        castore
+        return
+    }
+
+
+    // SALOAD/SASTORE (short)
+    public static testSaload([S, I)I {
+        
+        aload 0
+        iload 1
+        saload
+        ireturn
+    }
+
+
+    public static testSastore([S, I, I)V {
+        
+        aload 0
+        iload 1
+        iload 2
+        sastore
+        return
+    }
+
+}

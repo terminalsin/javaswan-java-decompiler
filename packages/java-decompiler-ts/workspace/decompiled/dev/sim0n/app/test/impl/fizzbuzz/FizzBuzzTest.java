@@ -1,0 +1,16 @@
+package dev.sim0n.app.test.impl.fizzbuzz;
+
+import codes.som.oof4j.fizzbuzz.enterprise.EnterpriseFizzBuzzCommandLineResultSubscriber;
+import codes.som.oof4j.fizzbuzz.enterprise.EnterpriseFizzBuzzExecutionEnvironment;
+import codes.som.oof4j.fizzbuzz.enterprise.computation.EnterpriseFizzBuzzComputationFactory;
+import codes.som.oof4j.fizzbuzz.enterprise.results.FizzBuzzResultPublisher;
+import dev.sim0n.app.test.Test;
+
+public class FizzBuzzTest implements Test {
+  public void run() {
+    EnterpriseFizzBuzzExecutionEnvironment.getInstance().setIterations(2);
+    Runnable task = EnterpriseFizzBuzzComputationFactory.buildComputationTask();
+    (FizzBuzzResultPublisher) task.registerSubscriber(new EnterpriseFizzBuzzCommandLineResultSubscriber());
+    task.run();
+  }
+}

@@ -1,0 +1,54 @@
+/*
+ * Test class for MULTIANEWARRAY instruction
+ */
+public class test/MultiANewArrayInsns {
+    // 2D int array
+    public static testMultianewarray2DInt(I, I)[[I {
+        
+        iload 0
+        iload 1
+        multianewarray [[I 2
+        areturn
+    }
+
+
+    // 3D int array
+    public static testMultianewarray3DInt(I, I, I)[[[I {
+        
+        iload 0
+        iload 1
+        iload 2
+        multianewarray [[[I 3
+        areturn
+    }
+
+
+    // 2D object array
+    public static testMultianewarray2DObject(I, I)[[java/lang/Object {
+        
+        iload 0
+        iload 1
+        multianewarray [[java/lang/Object 2
+        areturn
+    }
+
+
+    // 2D String array
+    public static testMultianewarray2DString(I, I)[[java/lang/String {
+        
+        iload 0
+        iload 1
+        multianewarray [[java/lang/String 2
+        areturn
+    }
+
+
+    // Partial dimension initialization (only first dimension)
+    public static testMultianewarray2DPartial(I)[[I {
+        
+        iload 0
+        multianewarray [[I 1
+        areturn
+    }
+
+}

@@ -1,0 +1,2 @@
+Summary for /Users/terminalsin/Documents/blackswan-java/benchmarks/jvm-obfuscation-tester/obf-test-1.0-SNAPSHOT.jar
+Decompiled with CFR 0.152

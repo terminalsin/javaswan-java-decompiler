@@ -1,0 +1,85 @@
+/*
+ * Test class for variable instructions (xLOAD, xSTORE)
+ */
+public class test/VarInsns {
+    // ILOAD/ISTORE instructions
+    public static testIloadIstore(I)I {
+        
+        iload 0
+        istore 1
+        iload 1
+        ireturn
+    }
+
+
+    // LLOAD/LSTORE instructions
+    public static testLloadLstore(J)J {
+        
+        lload 0
+        lstore 2
+        lload 2
+        lreturn
+    }
+
+
+    // FLOAD/FSTORE instructions
+    public static testFloadFstore(F)F {
+        
+        fload 0
+        fstore 1
+        fload 1
+        freturn
+    }
+
+
+    // DLOAD/DSTORE instructions
+    public static testDloadDstore(D)D {
+        
+        dload 0
+        dstore 2
+        dload 2
+        dreturn
+    }
+
+
+    // ALOAD/ASTORE instructions
+    public static testAloadAstore(java/lang/Object)java/lang/Object {
+        
+        aload 0
+        astore 1
+        aload 1
+        areturn
+    }
+
+
+    // Multiple variable indices
+    public static testMultipleVars(I, I, I, I)I {
+        
+        iload 0
+        iload 1
+        iadd
+        iload 2
+        iadd
+        iload 3
+        iadd
+        ireturn
+    }
+
+
+    // Higher variable indices (> 3)
+    public static testHighVarIndex(I, I, I, I, I)I {
+        
+        iload 4
+        ireturn
+    }
+
+
+    // Wide variable index (> 255 would need WIDE prefix)
+    // Testing with regular indices for now
+    public static testVarIndex255(I)I {
+        
+        iload 0
+        ireturn
+    }
+
+}

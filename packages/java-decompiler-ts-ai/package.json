@@ -1,0 +1,57 @@
+{
+    "name": "@blkswn/java-decompiler-ai",
+    "version": "1.0.0",
+    "description": "AI-powered post-processor for Java decompiler output - uses OpenCode to clean up and improve decompiled Java source",
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "bin": {
+        "java-decompiler-ai": "./dist/cli.mjs"
+    },
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "start": "bun src/cli.ts",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "typecheck": "tsc --noEmit",
+        "lint": "eslint src tests",
+        "prepublishOnly": "npm run build"
+    },
+    "keywords": [
+        "java",
+        "decompiler",
+        "ai",
+        "opencode",
+        "code-cleanup"
+    ],
+    "author": "Anthropic",
+    "license": "BSD-3-Clause",
+    "dependencies": {
+        "@blkswn/java-asm": "file:../java-asm-ts",
+        "@blkswn/java-decompiler": "file:../java-decompiler-ts",
+        "@blkswn/java-ir": "file:../java-ir-ts",
+        "@opencode-ai/sdk": "^1.2.15",
+        "chalk": "^5.4.1",
+        "commander": "^13.1.0",
+        "ink": "^5.1.0",
+        "jszip": "^3.10.1",
+        "react": "^18.3.1"
+    },
+    "devDependencies": {
+        "@types/node": "^20.19.26",
+        "@types/react": "^18.3.18",
+        "tsup": "^8.5.1",
+        "typescript": "^5.9.3",
+        "vitest": "^4.0.16"
+    }
+}

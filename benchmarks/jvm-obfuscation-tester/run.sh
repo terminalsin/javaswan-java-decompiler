@@ -1,0 +1,1 @@
+similarity-eval benchmark --java-formatter="./../java-format-cli.jar" -s ./jvm-obfuscation-tester/src/main/java -j ./obf-test-1.0-SNAPSHOT.jar -o ./benchmark-results --no-ai --per-file 

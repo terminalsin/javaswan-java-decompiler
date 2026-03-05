@@ -1,0 +1,6 @@
+package dev.sim0n.iridium.function;
+
+@FunctionalInterface
+public interface IntObjFunction<T> {
+  int apply(T var1);
+}

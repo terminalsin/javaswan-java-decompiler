@@ -1,0 +1,25 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "provider": {
+        "openrouter-shortcut": {
+            "npm": "@ai-sdk/openai-compatible",
+            "options": {
+                "baseURL": "https://openrouter.ai/api/v1"
+            },
+            "models": {
+                "minimax/minimax-m2.5:nitro": {
+                    "id": "minimax/minimax-m2.5:nitro",
+                    "name": "Minimax M2.5 Nitro",
+                    "attachment": false,
+                    "reasoning": true,
+                    "temperature": true,
+                    "tool_call": true,
+                    "limit": {
+                        "context": 163800,
+                        "output": 16384
+                    }
+                }
+            }
+        }
+    }
+}

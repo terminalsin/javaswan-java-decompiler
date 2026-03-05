@@ -1,0 +1,44 @@
+package dev.sim0n.app.test;
+
+import java.util.Arrays;
+import dev.sim0n.app.test.impl.trycatch.TryCatchTest;
+import dev.sim0n.app.test.impl.interfaceoverlap.InterfaceOverlapTest;
+import dev.sim0n.app.test.impl.fizzbuzz.FizzBuzzTest;
+import dev.sim0n.app.test.impl.visitor.VisitorTest;
+import dev.sim0n.app.test.impl.evaluation.EvaluationTest;
+import dev.sim0n.app.test.impl.crypttest.BlowfishTest;
+import dev.sim0n.app.test.impl.numbers.NumberComparisonTest;
+import dev.sim0n.app.test.impl.enumtest.EnumConstantsTest;
+import dev.sim0n.app.test.impl.inheritance.InheritanceTest;
+import dev.sim0n.app.test.impl.flow.WeirdLoopTest;
+import dev.sim0n.app.test.impl.flow.OpaqueConditionTest;
+import dev.sim0n.app.test.impl.annotation.AnnotationTest;
+import java.util.List;
+
+public class TestRepository {
+  private final Runnable runnable;
+  private final List<Test> tests;
+
+  public TestRepository(final Runnable runnable) {
+    this.tests = Arrays.asList(
+        new AnnotationTest(),
+        new OpaqueConditionTest(),
+        new WeirdLoopTest(),
+        new InheritanceTest(),
+        new EnumConstantsTest(),
+        new NumberComparisonTest(),
+        new BlowfishTest(),
+        new EvaluationTest(),
+        new VisitorTest(),
+        new FizzBuzzTest(),
+        new InterfaceOverlapTest(),
+        new TryCatchTest());
+    this.runnable = runnable;
+  }
+
+  public void run() {
+    this.runnable.run();
+    System.out.println("Running tests");
+    this.tests.forEach(Test::run);
+  }
+}

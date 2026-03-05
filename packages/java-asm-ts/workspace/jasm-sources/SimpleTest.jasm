@@ -1,0 +1,16 @@
+public class test/SimpleTest {
+    public static testReturn()V {
+        
+        label0:
+        return
+    }
+
+
+    public static testIconst0()I {
+        
+        label0:
+        iconst 0
+        ireturn
+    }
+
+}

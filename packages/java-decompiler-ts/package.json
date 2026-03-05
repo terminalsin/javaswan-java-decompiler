@@ -1,0 +1,48 @@
+{
+    "name": "@blkswn/java-decompiler",
+    "version": "1.0.0",
+    "description": "Java decompiler built on top of @blkswn/java-ir and @blkswn/java-analysis - lifts bytecode into a Java-like source representation",
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "typecheck": "tsc --noEmit",
+        "lint": "eslint src tests",
+        "prepublishOnly": "npm run build"
+    },
+    "keywords": [
+        "java",
+        "bytecode",
+        "decompiler",
+        "jvm",
+        "source",
+        "ast"
+    ],
+    "author": "Anthropic",
+    "license": "BSD-3-Clause",
+    "dependencies": {
+        "@blkswn/java-analysis": "file:../java-analysis-ts",
+        "@blkswn/java-asm": "file:../java-asm-ts",
+        "@blkswn/java-ir": "file:../java-ir-ts"
+    },
+    "devDependencies": {
+        "@types/node": "^20.19.26",
+        "jszip": "^3.10.1",
+        "tsup": "^8.5.1",
+        "typescript": "^5.9.3",
+        "vitest": "^4.0.16"
+    }
+}

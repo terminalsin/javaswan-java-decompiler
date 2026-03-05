@@ -1,0 +1,31 @@
+/*
+ * Disassembled from Test3.class (originally Test3.java) by JASM
+ *
+ * Original class version: 55
+ * Signature: <no signature>
+ */
+public class Test3 {
+    // <no signature>
+    // <no exceptions>
+    public <init>()V {
+        
+        label0:
+        aload 0
+        invokespecial java/lang/Object.<init>()V
+        return
+    }
+
+
+    // <no signature>
+    // <no exceptions>
+    public static test([java/lang/Object, I, java/lang/Object)V {
+        
+        label0:
+        aload 0
+        iload 1
+        aload 2
+        aastore
+        return
+    }
+
+}

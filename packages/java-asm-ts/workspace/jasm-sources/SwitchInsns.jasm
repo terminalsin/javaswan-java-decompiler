@@ -1,0 +1,121 @@
+/*
+ * Test class for switch instructions (TABLESWITCH, LOOKUPSWITCH)
+ */
+public class test/SwitchInsns {
+    // TABLESWITCH with consecutive cases
+    public static testTableswitch(I)I {
+        
+        iload 0
+        tableswitch default_case {
+            0: case0,
+            1: case1,
+            2: case2
+        }
+        
+        case0:
+        iconst 0
+        ireturn
+        
+        case1:
+        iconst 1
+        ireturn
+        
+        case2:
+        iconst 2
+        ireturn
+        
+        default_case:
+        iconst -1
+        ireturn
+    }
+
+
+    // TABLESWITCH starting from non-zero
+    public static testTableswitchOffset(I)I {
+        
+        iload 0
+        tableswitch default_case {
+            10: case10,
+            11: case11,
+            12: case12
+        }
+        
+        case10:
+        bipush 10
+        ireturn
+        
+        case11:
+        bipush 11
+        ireturn
+        
+        case12:
+        bipush 12
+        ireturn
+        
+        default_case:
+        iconst -1
+        ireturn
+    }
+
+
+    // LOOKUPSWITCH with sparse cases
+    public static testLookupswitch(I)I {
+        
+        iload 0
+        lookupswitch default_case {
+            1: case1,
+            10: case10,
+            100: case100
+        }
+        
+        case1:
+        iconst 1
+        ireturn
+        
+        case10:
+        bipush 10
+        ireturn
+        
+        case100:
+        bipush 100
+        ireturn
+        
+        default_case:
+        iconst -1
+        ireturn
+    }
+
+
+    // LOOKUPSWITCH with negative values
+    public static testLookupswitchNegative(I)I {
+        
+        iload 0
+        lookupswitch default_case {
+            -10: caseNeg10,
+            -1: caseNeg1,
+            0: case0,
+            1: case1
+        }
+        
+        caseNeg10:
+        bipush -10
+        ireturn
+        
+        caseNeg1:
+        iconst -1
+        ireturn
+        
+        case0:
+        iconst 0
+        ireturn
+        
+        case1:
+        iconst 1
+        ireturn
+        
+        default_case:
+        sipush 999
+        ireturn
+    }
+
+}

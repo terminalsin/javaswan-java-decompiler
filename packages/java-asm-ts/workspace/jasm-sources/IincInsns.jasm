@@ -1,0 +1,83 @@
+/*
+ * Test class for IINC instruction
+ */
+public class test/IincInsns {
+    // IINC with positive increment
+    public static testIincPositive(I)I {
+        
+        iinc 0, [1]
+        iload 0
+        ireturn
+    }
+
+
+    public static testIincPositive5(I)I {
+        
+        iinc 0, [5]
+        iload 0
+        ireturn
+    }
+
+
+    // IINC with negative increment
+    public static testIincNegative(I)I {
+        
+        iinc 0, [-1]
+        iload 0
+        ireturn
+    }
+
+
+    public static testIincNegative10(I)I {
+        
+        iinc 0, [-10]
+        iload 0
+        ireturn
+    }
+
+
+    // IINC with max/min byte increment
+    public static testIincMax127(I)I {
+        
+        iinc 0, [127]
+        iload 0
+        ireturn
+    }
+
+
+    public static testIincMin128(I)I {
+        
+        iinc 0, [-128]
+        iload 0
+        ireturn
+    }
+
+
+    // IINC with different variable index
+    public static testIincVar1(I, I)I {
+        
+        iinc 1, [10]
+        iload 1
+        ireturn
+    }
+
+
+    public static testIincVar3(I, I, I, I)I {
+        
+        iinc 3, [100]
+        iload 3
+        ireturn
+    }
+
+
+    // Multiple IINC operations
+    public static testMultipleIinc(I)I {
+        
+        iinc 0, [1]
+        iinc 0, [1]
+        iinc 0, [1]
+        iload 0
+        ireturn
+    }
+
+}

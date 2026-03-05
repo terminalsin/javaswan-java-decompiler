@@ -1,0 +1,47 @@
+{
+    "name": "@blkswn/java-ir",
+    "version": "1.0.0",
+    "description": "Low-level intermediate representation for Java bytecode - lifts stack-based instructions into typed expressions and statements",
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "typecheck": "tsc --noEmit",
+        "lint": "eslint src tests",
+        "prepublishOnly": "npm run build"
+    },
+    "keywords": [
+        "java",
+        "bytecode",
+        "ir",
+        "intermediate-representation",
+        "jvm",
+        "analysis",
+        "control-flow-graph"
+    ],
+    "author": "BlackSwan Labs",
+    "license": "BSD-3-Clause",
+    "dependencies": {
+        "@blkswn/java-asm": "file:../java-asm-ts"
+    },
+    "devDependencies": {
+        "@types/node": "^20.19.26",
+        "jszip": "^3.10.1",
+        "tsup": "^8.5.1",
+        "typescript": "^5.9.3",
+        "vitest": "^4.0.16"
+    }
+}

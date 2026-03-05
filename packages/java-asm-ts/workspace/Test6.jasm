@@ -1,0 +1,68 @@
+/*
+ * Disassembled from Test6.class (originally Test6.java) by JASM
+ *
+ * Original class version: 55
+ * Signature: <no signature>
+ */
+public class Test6 {
+    // <no signature>
+    // <no exceptions>
+    public <init>()V {
+        
+        label0:
+        aload 0
+        invokespecial java/lang/Object.<init>()V
+        return
+    }
+
+
+    // <no signature>
+    // <no exceptions>
+    public static testFloat0()F {
+        
+        label0:
+        fconst 0
+        freturn
+    }
+
+
+    // <no signature>
+    // <no exceptions>
+    public static testFloat1()F {
+        
+        label0:
+        fconst 1
+        freturn
+    }
+
+
+    // <no signature>
+    // <no exceptions>
+    public static testSwitch(I)I {
+        
+        label0:
+        iload 0
+        tableswitch label1 {
+            0: label2,
+            1: label3,
+            2: label4
+        }
+        
+        label2:
+        iconst 0
+        ireturn
+        
+        label3:
+        iconst 1
+        ireturn
+        
+        label4:
+        iconst 2
+        ireturn
+        
+        label1:
+        iconst -1
+        ireturn
+    }
+
+}

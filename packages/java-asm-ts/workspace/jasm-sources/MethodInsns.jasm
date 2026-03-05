@@ -1,0 +1,84 @@
+/*
+ * Test class for method invocation instructions
+ */
+public class test/MethodInsns {
+    // INVOKESTATIC instruction
+    public static testInvokestatic()I {
+        
+        invokestatic test/MethodInsns.helperStatic()I
+        ireturn
+    }
+
+
+    public static helperStatic()I {
+        
+        bipush 42
+        ireturn
+    }
+
+
+    // INVOKEVIRTUAL instruction
+    public testInvokevirtual()I {
+        
+        aload 0
+        invokevirtual test/MethodInsns.helperVirtual()I
+        ireturn
+    }
+
+
+    public helperVirtual()I {
+        
+        bipush 100
+        ireturn
+    }
+
+
+    // INVOKESPECIAL instruction (constructor)
+    public static testInvokespecial()java/lang/Object {
+        
+        new java/lang/Object
+        dup
+        invokespecial java/lang/Object.<init>()V
+        areturn
+    }
+
+
+    // INVOKEINTERFACE instruction
+    public static testInvokeinterface(java/util/List)I {
+        
+        aload 0
+        invokeinterface java/util/List.size()I
+        ireturn
+    }
+
+
+    // Method with multiple arguments
+    public static testMultipleArgs(I, I, java/lang/String)I {
+        
+        iload 0
+        iload 1
+        iadd
+        ireturn
+    }
+
+
+    // Method calling method with arguments
+    public static testCallWithArgs()I {
+        
+        iconst 5
+        iconst 3
+        aconst_null
+        invokestatic test/MethodInsns.testMultipleArgs(I, I, java/lang/String)I
+        ireturn
+    }
+
+
+    // Constructor
+    public <init>()V {
+        
+        aload 0
+        invokespecial java/lang/Object.<init>()V
+        return
+    }
+
+}

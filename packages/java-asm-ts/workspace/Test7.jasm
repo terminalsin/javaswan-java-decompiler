@@ -1,0 +1,38 @@
+/*
+ * Disassembled from Test7.class (originally Test7.java) by JASM
+ *
+ * Original class version: 55
+ * Signature: <no signature>
+ */
+public class Test7 {
+    // <no signature>
+    // <no exceptions>
+    public <init>()V {
+        
+        label0:
+        aload 0
+        invokespecial java/lang/Object.<init>()V
+        return
+    }
+
+
+    // <no signature>
+    // <no exceptions>
+    public static testFloat()F {
+        
+        label0:
+        ldc 3.14
+        freturn
+    }
+
+
+    // <no signature>
+    // <no exceptions>
+    public static testFloat2()F {
+        
+        label0:
+        fconst 2
+        freturn
+    }
+
+}

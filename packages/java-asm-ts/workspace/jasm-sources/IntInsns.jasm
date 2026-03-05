@@ -1,0 +1,127 @@
+/*
+ * Test class for int operand instructions (BIPUSH, SIPUSH, NEWARRAY)
+ */
+public class test/IntInsns {
+    // BIPUSH instruction (-128 to 127)
+    public static testBipush10()I {
+        
+        bipush 10
+        ireturn
+    }
+
+
+    public static testBipushNeg5()I {
+        
+        bipush -5
+        ireturn
+    }
+
+
+    public static testBipush127()I {
+        
+        bipush 127
+        ireturn
+    }
+
+
+    public static testBipushNeg128()I {
+        
+        bipush -128
+        ireturn
+    }
+
+
+    // SIPUSH instruction (-32768 to 32767)
+    public static testSipush1000()I {
+        
+        sipush 1000
+        ireturn
+    }
+
+
+    public static testSipushNeg1000()I {
+        
+        sipush -1000
+        ireturn
+    }
+
+
+    public static testSipush32767()I {
+        
+        sipush 32767
+        ireturn
+    }
+
+
+    public static testSipushNeg32768()I {
+        
+        sipush -32768
+        ireturn
+    }
+
+
+    // NEWARRAY instruction - various array types
+    public static testNewarrayBoolean(I)[Z {
+        
+        iload 0
+        newarray boolean
+        areturn
+    }
+
+
+    public static testNewarrayByte(I)[B {
+        
+        iload 0
+        newarray byte
+        areturn
+    }
+
+
+    public static testNewarrayChar(I)[C {
+        
+        iload 0
+        newarray char
+        areturn
+    }
+
+
+    public static testNewarrayShort(I)[S {
+        
+        iload 0
+        newarray short
+        areturn
+    }
+
+
+    public static testNewarrayInt(I)[I {
+        
+        iload 0
+        newarray int
+        areturn
+    }
+
+
+    public static testNewarrayLong(I)[J {
+        
+        iload 0
+        newarray long
+        areturn
+    }
+
+
+    public static testNewarrayFloat(I)[F {
+        
+        iload 0
+        newarray float
+        areturn
+    }
+
+
+    public static testNewarrayDouble(I)[D {
+        
+        iload 0
+        newarray double
+        areturn
+    }
+
+}

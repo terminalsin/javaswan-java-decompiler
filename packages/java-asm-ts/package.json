@@ -1,0 +1,45 @@
+{
+    "name": "@blkswn/java-asm",
+    "version": "1.0.0",
+    "description": "A TypeScript implementation of OW2 ASM - Java bytecode manipulation and analysis framework",
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "typecheck": "tsc --noEmit",
+        "lint": "eslint src tests",
+        "prepublishOnly": "npm run build"
+    },
+    "keywords": [
+        "java",
+        "bytecode",
+        "asm",
+        "classfile",
+        "jvm",
+        "manipulation",
+        "analysis"
+    ],
+    "author": "BlackSwan Labs",
+    "license": "BSD-3-Clause",
+    "devDependencies": {
+        "@types/jszip": "^3.4.0",
+        "@types/node": "^20.19.26",
+        "jszip": "^3.10.1",
+        "tsup": "^8.5.1",
+        "typescript": "^5.9.3",
+        "vitest": "^4.0.16"
+    }
+}

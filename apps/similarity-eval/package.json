@@ -1,0 +1,42 @@
+{
+    "name": "@blkswn/similarity-eval",
+    "version": "1.0.0",
+    "description": "Research-grade Java source code similarity evaluation for deobfuscation quality assessment",
+    "private": true,
+    "bin": {
+        "similarity-eval": "./dist/index.js"
+    },
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch",
+        "start": "bun src/index.ts",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "check-types": "tsc --noEmit",
+        "lint": "eslint src"
+    },
+    "author": "Anthropic",
+    "license": "BSD-3-Clause",
+    "dependencies": {
+        "commander": "^13.1.0",
+        "chalk": "^5.4.1",
+        "fast-diff": "^1.3.0",
+        "jszip": "^3.10.1",
+        "@blkswn/java-decompiler": "workspace:*",
+        "@blkswn/java-asm": "workspace:*",
+        "@blkswn/java-ir": "workspace:*",
+        "@blkswn/java-decompiler-ai": "workspace:*"
+    },
+    "optionalDependencies": {
+        "tree-sitter": "^0.22.4",
+        "tree-sitter-java": "^0.23.5"
+    },
+    "devDependencies": {
+        "@types/node": "^20.19.26",
+        "tsup": "^8.5.1",
+        "typescript": "^5.9.3",
+        "vitest": "^4.0.16"
+    }
+}

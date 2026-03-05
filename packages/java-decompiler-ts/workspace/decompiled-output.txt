@@ -1,0 +1,3403 @@
+================================================================================
+JAVA DECOMPILER OUTPUT FROM test.jar
+Generated at: 2026-03-05T14:49:08.601Z
+Jar: /Users/terminalsin/Documents/blackswan-java/packages/java-decompiler-ts/workspace/test.jar
+Total .class entries: 86
+IR built: 86
+Decompiled: 78
+IR build errors: 0
+================================================================================
+
+--------------------------------------------------------------------------------
+// Class: codes/som/oof4j/fizzbuzz/enterprise/EnterpriseFizzBuzzCommandLineResultSubscriber
+--------------------------------------------------------------------------------
+package codes.som.oof4j.fizzbuzz.enterprise;
+
+// Source: EnterpriseFizzBuzzCommandLineResultSubscriber.java
+// Version: 52.0
+import codes.som.oof4j.fizzbuzz.enterprise.results.FizzBuzzResult;
+import codes.som.oof4j.fizzbuzz.enterprise.results.FizzBuzzResultSubscriber;
+import java.io.PrintStream;
+
+public class EnterpriseFizzBuzzCommandLineResultSubscriber implements FizzBuzzResultSubscriber {
+  private final PrintStream outputStream;
+  
+  public EnterpriseFizzBuzzCommandLineResultSubscriber(PrintStream outputStream) {
+    // line 11
+    // line 12
+    this.outputStream = outputStream;
+    // line 13
+  }
+  
+  public void onResult(FizzBuzzResult result) {
+    // line 18
+    this.outputStream.println("Hello World from FizzBuz! iteration: " + result.getAsString());
+    // line 19
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: codes/som/oof4j/fizzbuzz/enterprise/EnterpriseFizzBuzzExecutionEnvironment
+--------------------------------------------------------------------------------
+package codes.som.oof4j.fizzbuzz.enterprise;
+
+// Source: EnterpriseFizzBuzzExecutionEnvironment.java
+// Version: 52.0
+public class EnterpriseFizzBuzzExecutionEnvironment {
+  private static final EnterpriseFizzBuzzExecutionEnvironment INSTANCE;
+  private int iterations;
+  
+  public static EnterpriseFizzBuzzExecutionEnvironment getInstance() {
+    // line 6
+    return INSTANCE;
+  }
+  
+  public int getIterations() {
+    // line 12
+    return this.iterations;
+  }
+  
+  public void setIterations(int iterations) {
+    // line 16
+    this.iterations = iterations;
+    // line 17
+  }
+  
+  static {
+    // line 4
+    INSTANCE = new EnterpriseFizzBuzzExecutionEnvironment();
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: codes/som/oof4j/fizzbuzz/enterprise/computation/EnterpriseFizzBuzzComputationFactory
+--------------------------------------------------------------------------------
+package codes.som.oof4j.fizzbuzz.enterprise.computation;
+
+// Source: EnterpriseFizzBuzzComputationFactory.java
+// Version: 52.0
+import codes.som.oof4j.fizzbuzz.enterprise.EnterpriseFizzBuzzExecutionEnvironment;
+
+public class EnterpriseFizzBuzzComputationFactory {
+  public static EnterpriseFizzBuzzComputationTask buildComputationTask() {
+    // line 7
+    return new EnterpriseFizzBuzzComputationTask(EnterpriseFizzBuzzExecutionEnvironment.getInstance().getIterations());
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: codes/som/oof4j/fizzbuzz/enterprise/computation/EnterpriseFizzBuzzComputationTask
+--------------------------------------------------------------------------------
+package codes.som.oof4j.fizzbuzz.enterprise.computation;
+
+// Source: EnterpriseFizzBuzzComputationTask.java
+// Version: 52.0
+import codes.som.oof4j.fizzbuzz.enterprise.computation.unit.FizzBuzzComputationUnit;
+import codes.som.oof4j.fizzbuzz.enterprise.results.internal.AbstractFizzBuzzResultPublisherImpl;
+
+public class EnterpriseFizzBuzzComputationTask extends AbstractFizzBuzzResultPublisherImpl implements Runnable {
+  private final int iterations;
+  
+  public EnterpriseFizzBuzzComputationTask(int iterations) {
+    // line 9
+    // line 10
+    this.iterations = iterations;
+    // line 11
+  }
+  
+  public void run() {
+    // line 15
+    this.execute();
+    // line 16
+  }
+  
+  private final void execute() {
+    // line 19
+    for (int iteration = 1; iteration <= this.iterations; iteration++) {
+      // line 20
+      FizzBuzzComputationUnit unit = new FizzBuzzComputationUnit(iteration);
+      // line 21
+      this.publishResult(unit.calculate());
+    }
+    // line 23
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: codes/som/oof4j/fizzbuzz/enterprise/computation/unit/FizzBuzzComputationUnit
+--------------------------------------------------------------------------------
+package codes.som.oof4j.fizzbuzz.enterprise.computation.unit;
+
+// Source: FizzBuzzComputationUnit.java
+// Version: 52.0
+import codes.som.oof4j.fizzbuzz.enterprise.results.FizzBuzzResult;
+import codes.som.oof4j.fizzbuzz.enterprise.results.internal.FizzBuzzResultImpl;
+
+public class FizzBuzzComputationUnit {
+  private final int iteration;
+  
+  public FizzBuzzComputationUnit(int iteration) {
+    // line 9
+    // line 10
+    this.iteration = iteration;
+    // line 11
+  }
+  
+  public final FizzBuzzResult calculate() {
+    // line 14
+    Flags flags = new Flags();
+    // line 15
+    FizzBuzzRuleApplicator.applyAllRules(this.iteration, flags);
+    // line 17
+    String message = FizzBuzzComputationUnitLookupTableEntry.values()[flags.getValue()].toString();
+    // line 18
+    if (message == null) {
+      // line 19
+      message = String.valueOf(this.iteration);
+    }
+    // line 22
+    return new FizzBuzzResultImpl();
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: codes/som/oof4j/fizzbuzz/enterprise/computation/unit/FizzBuzzComputationUnitLookupTableEntry
+--------------------------------------------------------------------------------
+package codes.som.oof4j.fizzbuzz.enterprise.computation.unit;
+
+// Source: FizzBuzzComputationUnitLookupTableEntry.java
+// Version: 52.0
+public enum FizzBuzzComputationUnitLookupTableEntry {
+  N_LITERAL(null),
+  FIZZ("Fizz"),
+  BUZZ("Buzz"),
+  FIZZ_BUZZ("Fizz Buzz");
+  
+  private final String name;
+  
+  FizzBuzzComputationUnitLookupTableEntry(String name) {
+    // line 10
+    // line 11
+    this.name = name;
+    // line 12
+  }
+  
+  public String toString() {
+    // line 16
+    return this.name;
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: codes/som/oof4j/fizzbuzz/enterprise/computation/unit/FizzBuzzRuleApplicator
+--------------------------------------------------------------------------------
+package codes.som.oof4j.fizzbuzz.enterprise.computation.unit;
+
+// Source: FizzBuzzRuleApplicator.java
+// Version: 52.0
+public class FizzBuzzRuleApplicator {
+  private static final int DIVISIBLE_BY_THREE = 1;
+  private static final int DIVISIBLE_BY_FIVE = 2;
+  
+  public static void applyAllRules(int number, Flags flags) {
+    // line 8
+    if (number % 3 == 0) {
+      // line 9
+      flags.setValue(flags.getValue() | 1);
+    }
+    // line 12
+    if (number % 5 == 0) {
+      // line 13
+      flags.setValue(flags.getValue() | 2);
+    }
+    // line 15
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: codes/som/oof4j/fizzbuzz/enterprise/computation/unit/Flags
+--------------------------------------------------------------------------------
+package codes.som.oof4j.fizzbuzz.enterprise.computation.unit;
+
+// Source: Flags.java
+// Version: 52.0
+public class Flags {
+  private int value;
+  
+  public void setValue(int value) {
+    // line 7
+    this.value = value;
+    // line 8
+  }
+  
+  public int getValue() {
+    // line 11
+    return this.value;
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: codes/som/oof4j/fizzbuzz/enterprise/results/FizzBuzzResult
+--------------------------------------------------------------------------------
+package codes.som.oof4j.fizzbuzz.enterprise.results;
+
+// Source: FizzBuzzResult.java
+// Version: 52.0
+public interface FizzBuzzResult {
+  abstract int getNumber();
+  
+  abstract String getAsString();
+}
+
+--------------------------------------------------------------------------------
+// Class: codes/som/oof4j/fizzbuzz/enterprise/results/FizzBuzzResultPublisher
+--------------------------------------------------------------------------------
+package codes.som.oof4j.fizzbuzz.enterprise.results;
+
+// Source: FizzBuzzResultPublisher.java
+// Version: 52.0
+public interface FizzBuzzResultPublisher {
+  abstract void registerSubscriber(FizzBuzzResultSubscriber arg0);
+  
+  abstract void unregisterSubscriber(FizzBuzzResultSubscriber arg0);
+}
+
+--------------------------------------------------------------------------------
+// Class: codes/som/oof4j/fizzbuzz/enterprise/results/FizzBuzzResultSubscriber
+--------------------------------------------------------------------------------
+package codes.som.oof4j.fizzbuzz.enterprise.results;
+
+// Source: FizzBuzzResultSubscriber.java
+// Version: 52.0
+public interface FizzBuzzResultSubscriber {
+  abstract void onResult(FizzBuzzResult arg0);
+}
+
+--------------------------------------------------------------------------------
+// Class: codes/som/oof4j/fizzbuzz/enterprise/results/internal/AbstractFizzBuzzResultPublisherImpl
+--------------------------------------------------------------------------------
+package codes.som.oof4j.fizzbuzz.enterprise.results.internal;
+
+// Source: AbstractFizzBuzzResultPublisherImpl.java
+// Version: 52.0
+import codes.som.oof4j.fizzbuzz.enterprise.results.FizzBuzzResult;
+import codes.som.oof4j.fizzbuzz.enterprise.results.FizzBuzzResultPublisher;
+import codes.som.oof4j.fizzbuzz.enterprise.results.FizzBuzzResultSubscriber;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+public abstract class AbstractFizzBuzzResultPublisherImpl implements FizzBuzzResultPublisher {
+  private final List<FizzBuzzResultSubscriber> subscribers;
+  
+  public AbstractFizzBuzzResultPublisherImpl() {
+    // line 10
+    // line 11
+    this.subscribers = new CopyOnWriteArrayList();
+  }
+  
+  public void registerSubscriber(FizzBuzzResultSubscriber subscriber) {
+    // line 15
+    this.subscribers.add(subscriber);
+    // line 16
+  }
+  
+  public void unregisterSubscriber(FizzBuzzResultSubscriber subscriber) {
+    // line 20
+    this.subscribers.remove(subscriber);
+    // line 21
+  }
+  
+  protected void publishResult(FizzBuzzResult result) {
+    // line 24
+    for (FizzBuzzResultSubscriber subscriber : this.subscribers) {
+      // line 25
+      subscriber.onResult(result);
+      // line 26
+    }
+    // line 27
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: codes/som/oof4j/fizzbuzz/enterprise/results/internal/FizzBuzzResultImpl
+--------------------------------------------------------------------------------
+package codes.som.oof4j.fizzbuzz.enterprise.results.internal;
+
+// Source: FizzBuzzResultImpl.java
+// Version: 52.0
+import codes.som.oof4j.fizzbuzz.enterprise.results.FizzBuzzResult;
+
+public class FizzBuzzResultImpl implements FizzBuzzResult {
+  private final int flags;
+  private final String representation;
+  
+  public FizzBuzzResultImpl(int number, String representation) {
+    // line 9
+    // line 10
+    this.flags = number;
+    // line 11
+    this.representation = representation;
+    // line 12
+  }
+  
+  public int getNumber() {
+    // line 17
+    return this.flags;
+  }
+  
+  public String getAsString() {
+    // line 22
+    return this.representation;
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/Application
+--------------------------------------------------------------------------------
+package dev.sim0n.app;
+
+// Source: Application.java
+// Version: 52.0
+import dev.sim0n.app.test.TestRepository;
+
+public class Application {
+  private final TestRepository testRepository;
+  
+  public void run() {
+    // line 12
+    System.out.println("Starting application...");
+    // line 14
+    if (this.fibRecursion(9) != 34) {
+      // line 17
+      throw new IllegalStateException("Fibonacci sequence is incorrect!");
+    }
+    // line 15
+    this.testRepository.run();
+    // line 20
+    System.out.println("Successfully passed every test!");
+    // line 21
+  }
+  
+  public int fibRecursion(int n) {
+    // line 25
+    if (n <= 1) {
+      // line 26
+      return n;
+    }
+    // line 30
+    if (n != 2) {
+      // line 35
+      return this.fibRecursion(n - 1) + this.fibRecursion(n - 2);
+    } else {
+      // line 31
+      return 1;
+    }
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/Main
+--------------------------------------------------------------------------------
+package dev.sim0n.app;
+
+// Source: Main.java
+// Version: 52.0
+public class Main {
+  public static void main(String[] args) {
+    // line 8
+    Application application = new Application();
+    // line 9
+    application.run();
+    // line 10
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/Test
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test;
+
+// Source: Test.java
+// Version: 52.0
+public interface Test {
+  abstract void run();
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/TestRepository
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test;
+
+// Source: TestRepository.java
+// Version: 52.0
+import dev.sim0n.app.test.impl.annotation.AnnotationTest;
+import dev.sim0n.app.test.impl.crypttest.BlowfishTest;
+import dev.sim0n.app.test.impl.enumtest.EnumConstantsTest;
+import dev.sim0n.app.test.impl.evaluation.EvaluationTest;
+import dev.sim0n.app.test.impl.fizzbuzz.FizzBuzzTest;
+import dev.sim0n.app.test.impl.flow.OpaqueConditionTest;
+import dev.sim0n.app.test.impl.flow.WeirdLoopTest;
+import dev.sim0n.app.test.impl.inheritance.InheritanceTest;
+import dev.sim0n.app.test.impl.interfaceoverlap.InterfaceOverlapTest;
+import dev.sim0n.app.test.impl.numbers.NumberComparisonTest;
+import dev.sim0n.app.test.impl.trycatch.TryCatchTest;
+import dev.sim0n.app.test.impl.visitor.VisitorTest;
+import java.util.Arrays;
+import java.util.List;
+
+public class TestRepository {
+  private final Runnable runnable;
+  private final List<Test> tests;
+  
+  public TestRepository(Runnable runnable) {
+    // line 44
+    // line 26
+    this.tests = Arrays.asList(new AnnotationTest(), new OpaqueConditionTest(), new WeirdLoopTest(), new InheritanceTest(), new EnumConstantsTest(), new NumberComparisonTest(), new BlowfishTest(), new EvaluationTest(), new VisitorTest(), new FizzBuzzTest(), new InterfaceOverlapTest(), new TryCatchTest());
+    // line 45
+    this.runnable = runnable;
+    // line 46
+  }
+  
+  public void run() {
+    // line 49
+    this.runnable.run();
+    // line 51
+    System.out.println("Running tests");
+    // line 52
+    this.tests.forEach(Test::run);
+    // line 53
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/factory/PartitioningTestRepositoryFactory
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.factory;
+
+// Source: PartitioningTestRepositoryFactory.java
+// Version: 52.0
+import dev.sim0n.app.test.TestRepository;
+import java.util.function.Function;
+
+public class PartitioningTestRepositoryFactory implements TestRepositoryFactory {
+  private final Function<Runnable, TestRepository> func;
+  
+  public PartitioningTestRepositoryFactory(Function<Runnable, TestRepository> func) {
+    // line 13
+    // line 14
+    this.func = func;
+    // line 15
+  }
+  
+  public TestRepository build() {
+    // line 19
+    return (TestRepository) this.func.apply(() -> System.out.println("Building test repository"));
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/factory/SimpleTestRepositoryFactory
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.factory;
+
+// Source: SimpleTestRepositoryFactory.java
+// Version: 52.0
+import dev.sim0n.app.test.TestRepository;
+
+public enum SimpleTestRepositoryFactory implements TestRepositoryFactory {
+  INSTANCE;
+  
+  private final TestRepositoryFactory innerTestRepositoryFactory;
+  
+  SimpleTestRepositoryFactory() {
+    // line 8
+    // line 11
+    this.innerTestRepositoryFactory = new PartitioningTestRepositoryFactory(TestRepository::new);
+  }
+  
+  public TestRepository build() {
+    // line 15
+    return this.innerTestRepositoryFactory.build();
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/factory/TestRepositoryFactory
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.factory;
+
+// Source: TestRepositoryFactory.java
+// Version: 52.0
+import dev.sim0n.app.test.TestRepository;
+
+public interface TestRepositoryFactory {
+  abstract TestRepository build();
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/annotation/AnnotationTest
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.annotation;
+
+// Source: AnnotationTest.java
+// Version: 52.0
+import dev.sim0n.app.test.Test;
+
+@TestAnnotation(string = "Test", doubleValue = 0.36, intValue = 36)
+public class AnnotationTest implements Test {
+  public void run() {
+    // line 13
+    Class clazz = AnnotationTest.class;
+    // line 15
+    if (!clazz.isAnnotationPresent(TestAnnotation.class)) {
+      // line 25
+      throw new IllegalStateException("Annotation not present");
+    }
+    // line 16
+    TestAnnotation annotation = (TestAnnotation) clazz.getAnnotation(TestAnnotation.class);
+    // line 18
+    String value = annotation.string();
+    // line 19
+    double doubleValue = annotation.doubleValue();
+    // line 20
+    int intValue = annotation.intValue();
+    // line 22
+    System.out.println("Testing annotations");
+    // line 23
+    System.out.printf("%s, %s, %d%n", value, doubleValue, intValue);
+    // line 24
+    // line 27
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/annotation/TestAnnotation
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.annotation;
+
+// Source: TestAnnotation.java
+// Version: 52.0
+public @interface TestAnnotation {
+  abstract String string();
+  
+  abstract int intValue();
+  
+  abstract double doubleValue();
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/crypttest/Blowfish
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.crypttest;
+
+// Source: Blowfish.java
+// Version: 52.0
+import java.security.MessageDigest;
+import java.util.Random;
+
+public class Blowfish {
+  private BlowfishCBC m_bfish;
+  private static Random m_rndGen;
+  static final char[] HEXTAB;
+  
+  public Blowfish(String password) {
+    // line 38
+    // line 40
+    MessageDigest digest = null;
+    try {
+      // line 42
+      digest = MessageDigest.getInstance("SHA1");
+      // line 43
+      digest.update(password.getBytes());
+    } catch (Exception e) {
+      // line 45
+    }
+    // line 46
+    // line 49
+    this.m_bfish = new BlowfishCBC(digest.digest(), 0);
+    // line 50
+    digest.reset();
+    // line 51
+  }
+  
+  public String encryptString(String sPlainText) {
+    // line 64
+    Random var4 = m_rndGen;
+    // monitorenter omitted
+    // line 66
+    long lCBCIV = m_rndGen.nextLong();
+    // line 67
+    // monitorexit omitted
+    throw var5;
+  }
+  
+  private String encStr(String sPlainText, long lNewCBCIV) {
+    // line 79
+    int nStrLen = sPlainText.length();
+    // line 80
+    byte[] buf = new byte[(nStrLen << 1 & -8) + 8];
+    // line 84
+    int nPos = 0;
+    // line 85
+    for (int nI = 0; nI < nStrLen; nI++) {
+      // line 87
+      char cActChar = sPlainText.charAt(nI);
+      // line 88
+      nPos++;
+      buf[nPos] = (byte) (cActChar >> 8 & 255);
+      // line 89
+      nPos++;
+      buf[nPos] = (byte) (cActChar & 255);
+    }
+    // line 93
+    cActChar = (byte) (buf.length - (nStrLen << 1));
+    while (nPos < buf.length) {
+      // line 94
+      // line 96
+      nPos++;
+      buf[nPos] = cActChar;
+    }
+    // line 99
+    byte[] newCBCIV = this.m_bfish;
+    // monitorenter omitted
+    // line 101
+    this.m_bfish.setCBCIV(lNewCBCIV);
+    // line 104
+    this.m_bfish.encrypt(buf);
+    // line 105
+    // monitorexit omitted
+    throw var10;
+  }
+  
+  public String decryptString(String sCipherText) {
+    // line 126
+    int nLen = sCipherText.length() >> 1 & -8;
+    // line 129
+    if (nLen < 8) {
+      // line 130
+      return null;
+    }
+    // line 133
+    byte[] cbciv = new byte[8];
+    // line 134
+    int nNumOfBytes = Blowfish.binHexToBytes(sCipherText, cbciv, 0, 0, 8);
+    // line 139
+    if (nNumOfBytes < 8) {
+      // line 140
+      return null;
+    }
+    // line 143
+    nLen += -8;
+    // line 144
+    if (nLen == 0) {
+      // line 146
+      return "";
+    }
+    // line 150
+    byte[] buf = new byte[nLen];
+    // line 152
+    nNumOfBytes = Blowfish.binHexToBytes(sCipherText, buf, 16, 0, nLen);
+    // line 160
+    if (nNumOfBytes >= nLen) {
+      // line 165
+      int nPadByte = this.m_bfish;
+      // monitorenter omitted
+      // line 167
+      this.m_bfish.setCBCIV(cbciv);
+      // line 170
+      this.m_bfish.decrypt(buf);
+      // line 171
+      // monitorexit omitted
+    } else {
+      // line 162
+      return null;
+    }
+  }
+  
+  public void destroy() {
+    // line 200
+    this.m_bfish.cleanUp();
+    // line 201
+  }
+  
+  private static long byteArrayToLong(byte[] buffer, int nStartIndex) {
+    // line 1256
+    return (long) buffer[nStartIndex] << 56 | ((long) buffer[nStartIndex + 1] & 255) << 48 | ((long) buffer[nStartIndex + 2] & 255) << 40 | ((long) buffer[nStartIndex + 3] & 255) << 32 | ((long) buffer[nStartIndex + 4] & 255) << 24 | ((long) buffer[nStartIndex + 5] & 255) << 16 | ((long) buffer[nStartIndex + 6] & 255) << 8 | (long) buffer[nStartIndex + 7] & 255;
+  }
+  
+  private static void longToByteArray(long lValue, byte[] buffer, int nStartIndex) {
+    // line 1277
+    buffer[nStartIndex] = (byte) (int) (lValue >>> 56);
+    // line 1278
+    buffer[nStartIndex + 1] = (byte) (int) (lValue >>> 48 & 255);
+    // line 1279
+    buffer[nStartIndex + 2] = (byte) (int) (lValue >>> 40 & 255);
+    // line 1280
+    buffer[nStartIndex + 3] = (byte) (int) (lValue >>> 32 & 255);
+    // line 1281
+    buffer[nStartIndex + 4] = (byte) (int) (lValue >>> 24 & 255);
+    // line 1282
+    buffer[nStartIndex + 5] = (byte) (int) (lValue >>> 16 & 255);
+    // line 1283
+    buffer[nStartIndex + 6] = (byte) (int) (lValue >>> 8 & 255);
+    // line 1284
+    buffer[nStartIndex + 7] = (byte) (int) lValue;
+    // line 1285
+  }
+  
+  private static long intArrayToLong(int[] buffer, int nStartIndex) {
+    // line 1297
+    return (long) buffer[nStartIndex] << 32 | (long) buffer[nStartIndex + 1] & 4294967295L;
+  }
+  
+  private static void longToIntArray(long lValue, int[] buffer, int nStartIndex) {
+    // line 1312
+    buffer[nStartIndex] = (int) (lValue >>> 32);
+    // line 1313
+    buffer[nStartIndex + 1] = (int) lValue;
+    // line 1314
+  }
+  
+  private static long makeLong(int nLo, int nHi) {
+    // line 1326
+    return (long) nHi << 32 | (long) nLo & 4294967295L;
+  }
+  
+  private static int longLo32(long lVal) {
+    // line 1337
+    return (int) lVal;
+  }
+  
+  private static int longHi32(long lVal) {
+    // line 1347
+    return (int) (lVal >>> 32);
+  }
+  
+  private static String bytesToBinHex(byte[] data, int nStartPos, int nNumOfBytes) {
+    // line 1365
+    StringBuilder sbuf = new StringBuilder();
+    // line 1366
+    sbuf.setLength(nNumOfBytes << 1);
+    // line 1368
+    int nPos = 0;
+    // line 1369
+    for (int nI = 0; nI < nNumOfBytes; nI++) {
+      // line 1371
+      nPos++;
+      sbuf.setCharAt(nPos, HEXTAB[data[nI + nStartPos] >> 4 & 15]);
+      // line 1372
+      nPos++;
+      sbuf.setCharAt(nPos, HEXTAB[data[nI + nStartPos] & 15]);
+    }
+    // line 1374
+    return sbuf.toString();
+  }
+  
+  private static int binHexToBytes(String sBinHex, byte[] data, int nSrcPos, int nDstPos, int nNumOfBytes) {
+    // line 1394
+    int nStrLen = sBinHex.length();
+    // line 1396
+    int nAvailBytes = nStrLen - nSrcPos >> 1;
+    // line 1397
+    if (nAvailBytes < nNumOfBytes) {
+      // line 1399
+      nNumOfBytes = nAvailBytes;
+    }
+    // line 1402
+    int nOutputCapacity = data.length - nDstPos;
+    // line 1403
+    if (nNumOfBytes > nOutputCapacity) {
+      // line 1405
+      nNumOfBytes = nOutputCapacity;
+    }
+    // line 1409
+    int nResult = 0;
+    // line 1410
+    for (int nI = 0; nI < nNumOfBytes; nI++) {
+      // line 1412
+      byte bActByte = 0;
+      // line 1413
+      boolean blConvertOK = 1;
+      // line 1414
+      for (int nJ = 0; nJ < 2; nJ++) {
+        // line 1416
+        bActByte = (byte) (bActByte << 4);
+        // line 1417
+        nSrcPos++;
+        char cActChar = sBinHex.charAt(nSrcPos);
+        // line 1419
+        if (cActChar < 97 || cActChar > 102) {
+          // line 1425
+          if (cActChar < 48 || cActChar > 57) {
+            // line 1431
+            blConvertOK = 0;
+          } else {
+            // line 1427
+            bActByte = (byte) (bActByte | (byte) (cActChar - 48));
+          }
+        } else {
+          // line 1421
+          bActByte = (byte) (bActByte | (byte) (cActChar - 97) + 10);
+        }
+      }
+      // line 1435
+      if (blConvertOK != 0) {
+        // line 1437
+        nDstPos++;
+        data[nDstPos] = bActByte;
+        // line 1438
+        nResult++;
+      }
+    }
+    // line 1442
+    return nResult;
+  }
+  
+  private static String byteArrayToUNCString(byte[] data, int nStartPos, int nNumOfBytes) {
+    // line 1457
+    nNumOfBytes &= -2;
+    // line 1460
+    int nAvailCapacity = data.length - nStartPos;
+    // line 1462
+    if (nAvailCapacity < nNumOfBytes) {
+      // line 1464
+      nNumOfBytes = nAvailCapacity;
+    }
+    // line 1467
+    StringBuilder sbuf = new StringBuilder();
+    // line 1468
+    sbuf.setLength(nNumOfBytes >> 1);
+    // line 1470
+    int nSBufPos = 0;
+    while (nNumOfBytes > 0) {
+      // line 1472
+      // line 1474
+      nSBufPos++;
+      sbuf.setCharAt(nSBufPos, (char) (data[nStartPos] << 8 | data[nStartPos + 1] & 255));
+      // line 1476
+      nStartPos += 2;
+      // line 1477
+      nNumOfBytes += -2;
+    }
+    // line 1480
+    return sbuf.toString();
+  }
+  
+  static int access$000(long x0) {
+    // line 27
+    return Blowfish.longHi32(x0);
+  }
+  
+  static int access$100(long x0) {
+    // line 27
+    return Blowfish.longLo32(x0);
+  }
+  
+  static long access$200(int x0, int x1) {
+    // line 27
+    return Blowfish.makeLong(x0, x1);
+  }
+  
+  static long access$300(byte[] x0, int x1) {
+    // line 27
+    return Blowfish.byteArrayToLong(x0, x1);
+  }
+  
+  static void access$400(long x0, byte[] x1, int x2) {
+    // line 27
+    Blowfish.longToByteArray(x0, x1, x2);
+  }
+  
+  static long access$500(int[] x0, int x1) {
+    // line 27
+    return Blowfish.intArrayToLong(x0, x1);
+  }
+  
+  static void access$600(long x0, int[] x1, int x2) {
+    // line 27
+    Blowfish.longToIntArray(x0, x1, x2);
+  }
+  
+  static {
+    // line 30
+    m_rndGen = new Random();
+    // line 1351
+    HEXTAB = new char[] {48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 97, 98, 99, 100, 101, 102};
+  }
+  
+  private static class BlowfishCBC extends BlowfishECB {
+    long m_lCBCIV;
+    
+    public long getCBCIV() {
+      // line 882
+      return this.m_lCBCIV;
+    }
+    
+    public void getCBCIV(byte[] dest) {
+      // line 891
+      Blowfish.access$400(this.m_lCBCIV, dest, 0);
+      // line 892
+    }
+    
+    public void setCBCIV(long lNewCBCIV) {
+      // line 900
+      this.m_lCBCIV = lNewCBCIV;
+      // line 901
+    }
+    
+    public void setCBCIV(byte[] newCBCIV) {
+      // line 909
+      this.m_lCBCIV = Blowfish.access$300(newCBCIV, 0);
+      // line 910
+    }
+    
+    public BlowfishCBC(byte[] bfkey) {
+      // line 919
+      super(bfkey);
+      // line 922
+      this.setCBCIV(0);
+      // line 923
+    }
+    
+    public BlowfishCBC(byte[] bfkey, long lInitCBCIV) {
+      // line 934
+      super(bfkey);
+      // line 937
+      this.setCBCIV(lInitCBCIV);
+      // line 938
+    }
+    
+    public BlowfishCBC(byte[] bfkey, byte[] initCBCIV) {
+      // line 949
+      super(bfkey);
+      // line 952
+      this.setCBCIV(initCBCIV);
+      // line 953
+    }
+    
+    public void cleanUp() {
+      // line 963
+      this.m_lCBCIV = 0;
+      // line 964
+      super.cleanUp();
+      // line 965
+    }
+    
+    private long encryptBlockCBC(long lPlainblock) {
+      // line 972
+      lPlainblock ^= this.m_lCBCIV;
+      // line 975
+      lPlainblock = super.encryptBlock(lPlainblock);
+      // line 978
+      this.m_lCBCIV = lPlainblock;
+      return null;
+    }
+    
+    private long decryptBlockCBC(long lCipherblock) {
+      // line 986
+      long lTemp = lCipherblock;
+      // line 989
+      lCipherblock = super.decryptBlock(lCipherblock);
+      // line 992
+      lCipherblock ^= this.m_lCBCIV;
+      // line 995
+      this.m_lCBCIV = lTemp;
+      // line 998
+      return lCipherblock;
+    }
+    
+    public void encrypt(byte[] inbuffer, byte[] outbuffer) {
+      // line 1013
+      int nLen = inbuffer.length;
+      // line 1015
+      for (int nI = 0; nI < nLen; nI += 8) {
+        // line 1018
+        long lTemp = Blowfish.access$300(inbuffer, nI);
+        // line 1019
+        lTemp = this.encryptBlockCBC(lTemp);
+        // line 1020
+        Blowfish.access$400(lTemp, outbuffer, nI);
+      }
+      // line 1022
+    }
+    
+    public void encrypt(byte[] buffer) {
+      // line 1034
+      int nLen = buffer.length;
+      // line 1036
+      for (int nI = 0; nI < nLen; nI += 8) {
+        // line 1039
+        long lTemp = Blowfish.access$300(buffer, nI);
+        // line 1040
+        lTemp = this.encryptBlockCBC(lTemp);
+        // line 1041
+        Blowfish.access$400(lTemp, buffer, nI);
+      }
+      // line 1043
+    }
+    
+    public void encrypt(int[] inbuffer, int[] outbuffer) {
+      // line 1059
+      int nLen = inbuffer.length;
+      // line 1061
+      for (int nI = 0; nI < nLen; nI += 2) {
+        // line 1064
+        long lTemp = Blowfish.access$500(inbuffer, nI);
+        // line 1065
+        lTemp = this.encryptBlockCBC(lTemp);
+        // line 1066
+        Blowfish.access$600(lTemp, outbuffer, nI);
+      }
+      // line 1068
+    }
+    
+    public void encrypt(int[] buffer) {
+      // line 1078
+      int nLen = buffer.length;
+      // line 1080
+      for (int nI = 0; nI < nLen; nI += 2) {
+        // line 1083
+        long lTemp = Blowfish.access$500(buffer, nI);
+        // line 1084
+        lTemp = this.encryptBlockCBC(lTemp);
+        // line 1085
+        Blowfish.access$600(lTemp, buffer, nI);
+      }
+      // line 1087
+    }
+    
+    public void encrypt(long[] inbuffer, long[] outbuffer) {
+      // line 1100
+      int nLen = inbuffer.length;
+      // line 1101
+      for (int nI = 0; nI < nLen; nI++) {
+        // line 1103
+        outbuffer[nI] = this.encryptBlockCBC(inbuffer[nI]);
+      }
+      // line 1105
+    }
+    
+    public void encrypt(long[] buffer) {
+      // line 1116
+      int nLen = buffer.length;
+      // line 1117
+      for (int nI = 0; nI < nLen; nI++) {
+        // line 1119
+        buffer[nI] = this.encryptBlockCBC(buffer[nI]);
+      }
+      // line 1121
+    }
+    
+    public void decrypt(byte[] inbuffer, byte[] outbuffer) {
+      // line 1135
+      int nLen = inbuffer.length;
+      // line 1137
+      for (int nI = 0; nI < nLen; nI += 8) {
+        // line 1140
+        long lTemp = Blowfish.access$300(inbuffer, nI);
+        // line 1141
+        lTemp = this.decryptBlockCBC(lTemp);
+        // line 1142
+        Blowfish.access$400(lTemp, outbuffer, nI);
+      }
+      // line 1144
+    }
+    
+    public void decrypt(byte[] buffer) {
+      // line 1155
+      int nLen = buffer.length;
+      // line 1157
+      for (int nI = 0; nI < nLen; nI += 8) {
+        // line 1160
+        long lTemp = Blowfish.access$300(buffer, nI);
+        // line 1161
+        lTemp = this.decryptBlockCBC(lTemp);
+        // line 1162
+        Blowfish.access$400(lTemp, buffer, nI);
+      }
+      // line 1164
+    }
+    
+    public void decrypt(int[] inbuffer, int[] outbuffer) {
+      // line 1180
+      int nLen = inbuffer.length;
+      // line 1182
+      for (int nI = 0; nI < nLen; nI += 2) {
+        // line 1185
+        long lTemp = Blowfish.access$500(inbuffer, nI);
+        // line 1186
+        lTemp = this.decryptBlockCBC(lTemp);
+        // line 1187
+        Blowfish.access$600(lTemp, outbuffer, nI);
+      }
+      // line 1189
+    }
+    
+    public void decrypt(int[] buffer) {
+      // line 1200
+      int nLen = buffer.length;
+      // line 1202
+      for (int nI = 0; nI < nLen; nI += 2) {
+        // line 1205
+        long lTemp = Blowfish.access$500(buffer, nI);
+        // line 1206
+        lTemp = this.decryptBlockCBC(lTemp);
+        // line 1207
+        Blowfish.access$600(lTemp, buffer, nI);
+      }
+      // line 1209
+    }
+    
+    public void decrypt(long[] inbuffer, long[] outbuffer) {
+      // line 1222
+      int nLen = inbuffer.length;
+      // line 1223
+      for (int nI = 0; nI < nLen; nI++) {
+        // line 1225
+        outbuffer[nI] = this.decryptBlockCBC(inbuffer[nI]);
+      }
+      // line 1227
+    }
+    
+    public void decrypt(long[] buffer) {
+      // line 1238
+      int nLen = buffer.length;
+      // line 1239
+      for (int nI = 0; nI < nLen; nI++) {
+        // line 1241
+        buffer[nI] = this.decryptBlockCBC(buffer[nI]);
+      }
+      // line 1243
+    }
+  }
+  
+  private static class BlowfishECB {
+    public static final int MAXKEYLENGTH = 56;
+    public static final int BLOCKSIZE = 8;
+    static final int PBOX_ENTRIES = 18;
+    static final int SBOX_ENTRIES = 256;
+    int[] m_pbox;
+    int[] m_sbox1;
+    int[] m_sbox2;
+    int[] m_sbox3;
+    int[] m_sbox4;
+    static final int[] pbox_init;
+    static final int[] sbox_init_1;
+    static final int[] sbox_init_2;
+    static final int[] sbox_init_3;
+    static final int[] sbox_init_4;
+    
+    public BlowfishECB(byte[] bfkey) {
+      // line 234
+      // line 238
+      this.m_pbox = new int[18];
+      // line 240
+      int nI = 0;
+      while (nI < 18) {
+        // line 242
+        this.m_pbox[nI] = pbox_init[nI];
+        // line 240
+        nI++;
+      }
+      // line 245
+      this.m_sbox1 = new int[256];
+      // line 246
+      this.m_sbox2 = new int[256];
+      // line 247
+      this.m_sbox3 = new int[256];
+      // line 248
+      this.m_sbox4 = new int[256];
+      // line 250
+      for (nI = 0; nI < 256; nI++) {
+        // line 252
+        this.m_sbox1[nI] = sbox_init_1[nI];
+        // line 253
+        this.m_sbox2[nI] = sbox_init_2[nI];
+        // line 254
+        this.m_sbox3[nI] = sbox_init_3[nI];
+        // line 255
+        this.m_sbox4[nI] = sbox_init_4[nI];
+      }
+      // line 260
+      int nLen = bfkey.length;
+      // line 261
+      if (nLen == 0) {
+        return;
+      }
+      // line 262
+      int nKeyPos = 0;
+      // line 263
+      int nBuild = 0;
+      // line 266
+      for (nI = 0; nI < 18; nI++) {
+        // line 268
+        for (int nJ = 0; nJ < 4; nJ++) {
+          // line 270
+          nBuild = nBuild << 8 | bfkey[nKeyPos] & 255;
+          // line 272
+          nKeyPos++;
+          if (nKeyPos == nLen) {
+            // line 274
+            nKeyPos = 0;
+          }
+        }
+        // line 277
+        this.m_pbox[nI] ^= nBuild;
+      }
+      // line 282
+      long lZero = 0;
+      // line 285
+      for (nI = 0; nI < 18; nI += 2) {
+        // line 287
+        lZero = this.encryptBlock(lZero);
+        // line 288
+        this.m_pbox[nI] = (int) (lZero >>> 32);
+        // line 289
+        this.m_pbox[nI + 1] = (int) (lZero & 4294967295L);
+      }
+      // line 291
+      for (nI = 0; nI < 256; nI += 2) {
+        // line 293
+        lZero = this.encryptBlock(lZero);
+        // line 294
+        this.m_sbox1[nI] = (int) (lZero >>> 32);
+        // line 295
+        this.m_sbox1[nI + 1] = (int) (lZero & 4294967295L);
+      }
+      // line 297
+      for (nI = 0; nI < 256; nI += 2) {
+        // line 299
+        lZero = this.encryptBlock(lZero);
+        // line 300
+        this.m_sbox2[nI] = (int) (lZero >>> 32);
+        // line 301
+        this.m_sbox2[nI + 1] = (int) (lZero & 4294967295L);
+      }
+      // line 303
+      for (nI = 0; nI < 256; nI += 2) {
+        // line 305
+        lZero = this.encryptBlock(lZero);
+        // line 306
+        this.m_sbox3[nI] = (int) (lZero >>> 32);
+        // line 307
+        this.m_sbox3[nI + 1] = (int) (lZero & 4294967295L);
+      }
+      // line 309
+      for (nI = 0; nI < 256; nI += 2) {
+        // line 311
+        lZero = this.encryptBlock(lZero);
+        // line 312
+        this.m_sbox4[nI] = (int) (lZero >>> 32);
+        // line 313
+        this.m_sbox4[nI + 1] = (int) (lZero & 4294967295L);
+      }
+      // line 315
+    }
+    
+    public void cleanUp() {
+      // line 324
+      int nI = 0;
+      while (nI < 18) {
+        // line 326
+        this.m_pbox[nI] = 0;
+        // line 324
+        nI++;
+      }
+      // line 329
+      for (nI = 0; nI < 256; nI++) {
+        // line 331
+        this.m_sbox4[nI] = 0;
+        this.m_sbox3[nI] = 0;
+        this.m_sbox2[nI] = 0;
+        this.m_sbox1[nI] = 0;
+      }
+      // line 333
+    }
+    
+    public static boolean selfTest() {
+      // line 342
+      byte[] testKey1 = new byte[] {28, 88, 127, 28, 19, -110, 79, -17};
+      // line 344
+      int[] tv_p1 = new int[] {810889768, 1836001626};
+      // line 345
+      int[] tv_c1 = new int[] {1439381364, -784403967};
+      // line 346
+      int[] tv_t1 = new int[2];
+      // line 349
+      String sTestKey2 = "Who is John Galt?";
+      // line 350
+      byte[] testKey2 = sTestKey2.getBytes();
+      // line 352
+      int[] tv_p2 = new int[] {-19088744, 1985229328};
+      // line 353
+      int[] tv_c2 = new int[] {-862883029, -2145192316};
+      // line 354
+      int[] tv_t2 = new int[2];
+      // line 359
+      BlowfishECB testbf1 = new BlowfishECB(testKey1);
+      // line 361
+      testbf1.encrypt(tv_p1, tv_t1);
+      // line 363
+      if (tv_t1[0] != tv_c1[0]) {
+        // line 366
+        return 0;
+      }
+      if (tv_t1[1] != tv_c1[1]) {
+        // line 366
+        return 0;
+      }
+      // line 369
+      testbf1.decrypt(tv_t1);
+      // line 371
+      if (tv_t1[0] != tv_p1[0]) {
+        // line 374
+        return 0;
+      }
+      if (tv_t1[1] != tv_p1[1]) {
+        // line 374
+        return 0;
+      }
+      // line 377
+      BlowfishECB testbf2 = new BlowfishECB(testKey2);
+      // line 379
+      testbf2.encrypt(tv_p2, tv_t2);
+      // line 381
+      if (tv_t2[0] != tv_c2[0]) {
+        // line 384
+        return 0;
+      }
+      if (tv_t2[1] != tv_c2[1]) {
+        // line 384
+        return 0;
+      }
+      // line 387
+      testbf2.decrypt(tv_t2);
+      // line 389
+      if (tv_t2[0] != tv_p2[0]) {
+        // line 392
+        return 0;
+      }
+      if (tv_t2[1] == tv_p2[1]) {
+        // line 396
+        return 1;
+      } else {
+        // line 392
+        return 0;
+      }
+    }
+    
+    protected long encryptBlock(long lPlainBlock) {
+      // line 405
+      int nHi = Blowfish.access$000(lPlainBlock);
+      // line 406
+      int nLo = Blowfish.access$100(lPlainBlock);
+      // line 412
+      int[] sbox1 = this.m_sbox1;
+      // line 413
+      int[] sbox2 = this.m_sbox2;
+      // line 414
+      int[] sbox3 = this.m_sbox3;
+      // line 415
+      int[] sbox4 = this.m_sbox4;
+      // line 417
+      int[] pbox = this.m_pbox;
+      // line 419
+      nHi ^= pbox[0];
+      // line 420
+      nLo ^= (sbox1[nHi >>> 24] + sbox2[nHi >>> 16 & 255] ^ sbox3[nHi >>> 8 & 255]) + sbox4[nHi & 255] ^ pbox[1];
+      // line 421
+      nHi ^= (sbox1[nLo >>> 24] + sbox2[nLo >>> 16 & 255] ^ sbox3[nLo >>> 8 & 255]) + sbox4[nLo & 255] ^ pbox[2];
+      // line 422
+      nLo ^= (sbox1[nHi >>> 24] + sbox2[nHi >>> 16 & 255] ^ sbox3[nHi >>> 8 & 255]) + sbox4[nHi & 255] ^ pbox[3];
+      // line 423
+      nHi ^= (sbox1[nLo >>> 24] + sbox2[nLo >>> 16 & 255] ^ sbox3[nLo >>> 8 & 255]) + sbox4[nLo & 255] ^ pbox[4];
+      // line 424
+      nLo ^= (sbox1[nHi >>> 24] + sbox2[nHi >>> 16 & 255] ^ sbox3[nHi >>> 8 & 255]) + sbox4[nHi & 255] ^ pbox[5];
+      // line 425
+      nHi ^= (sbox1[nLo >>> 24] + sbox2[nLo >>> 16 & 255] ^ sbox3[nLo >>> 8 & 255]) + sbox4[nLo & 255] ^ pbox[6];
+      // line 426
+      nLo ^= (sbox1[nHi >>> 24] + sbox2[nHi >>> 16 & 255] ^ sbox3[nHi >>> 8 & 255]) + sbox4[nHi & 255] ^ pbox[7];
+      // line 427
+      nHi ^= (sbox1[nLo >>> 24] + sbox2[nLo >>> 16 & 255] ^ sbox3[nLo >>> 8 & 255]) + sbox4[nLo & 255] ^ pbox[8];
+      // line 428
+      nLo ^= (sbox1[nHi >>> 24] + sbox2[nHi >>> 16 & 255] ^ sbox3[nHi >>> 8 & 255]) + sbox4[nHi & 255] ^ pbox[9];
+      // line 429
+      nHi ^= (sbox1[nLo >>> 24] + sbox2[nLo >>> 16 & 255] ^ sbox3[nLo >>> 8 & 255]) + sbox4[nLo & 255] ^ pbox[10];
+      // line 430
+      nLo ^= (sbox1[nHi >>> 24] + sbox2[nHi >>> 16 & 255] ^ sbox3[nHi >>> 8 & 255]) + sbox4[nHi & 255] ^ pbox[11];
+      // line 431
+      nHi ^= (sbox1[nLo >>> 24] + sbox2[nLo >>> 16 & 255] ^ sbox3[nLo >>> 8 & 255]) + sbox4[nLo & 255] ^ pbox[12];
+      // line 432
+      nLo ^= (sbox1[nHi >>> 24] + sbox2[nHi >>> 16 & 255] ^ sbox3[nHi >>> 8 & 255]) + sbox4[nHi & 255] ^ pbox[13];
+      // line 433
+      nHi ^= (sbox1[nLo >>> 24] + sbox2[nLo >>> 16 & 255] ^ sbox3[nLo >>> 8 & 255]) + sbox4[nLo & 255] ^ pbox[14];
+      // line 434
+      nLo ^= (sbox1[nHi >>> 24] + sbox2[nHi >>> 16 & 255] ^ sbox3[nHi >>> 8 & 255]) + sbox4[nHi & 255] ^ pbox[15];
+      // line 435
+      nHi ^= (sbox1[nLo >>> 24] + sbox2[nLo >>> 16 & 255] ^ sbox3[nLo >>> 8 & 255]) + sbox4[nLo & 255] ^ pbox[16];
+      // line 439
+      return Blowfish.access$200(nHi, nLo ^ pbox[17]);
+    }
+    
+    protected long decryptBlock(long lCipherBlock) {
+      // line 446
+      int nHi = Blowfish.access$000(lCipherBlock);
+      // line 447
+      int nLo = Blowfish.access$100(lCipherBlock);
+      // line 449
+      nHi ^= this.m_pbox[17];
+      // line 450
+      nLo ^= (this.m_sbox1[nHi >>> 24] + this.m_sbox2[nHi >>> 16 & 255] ^ this.m_sbox3[nHi >>> 8 & 255]) + this.m_sbox4[nHi & 255] ^ this.m_pbox[16];
+      // line 451
+      nHi ^= (this.m_sbox1[nLo >>> 24] + this.m_sbox2[nLo >>> 16 & 255] ^ this.m_sbox3[nLo >>> 8 & 255]) + this.m_sbox4[nLo & 255] ^ this.m_pbox[15];
+      // line 452
+      nLo ^= (this.m_sbox1[nHi >>> 24] + this.m_sbox2[nHi >>> 16 & 255] ^ this.m_sbox3[nHi >>> 8 & 255]) + this.m_sbox4[nHi & 255] ^ this.m_pbox[14];
+      // line 453
+      nHi ^= (this.m_sbox1[nLo >>> 24] + this.m_sbox2[nLo >>> 16 & 255] ^ this.m_sbox3[nLo >>> 8 & 255]) + this.m_sbox4[nLo & 255] ^ this.m_pbox[13];
+      // line 454
+      nLo ^= (this.m_sbox1[nHi >>> 24] + this.m_sbox2[nHi >>> 16 & 255] ^ this.m_sbox3[nHi >>> 8 & 255]) + this.m_sbox4[nHi & 255] ^ this.m_pbox[12];
+      // line 455
+      nHi ^= (this.m_sbox1[nLo >>> 24] + this.m_sbox2[nLo >>> 16 & 255] ^ this.m_sbox3[nLo >>> 8 & 255]) + this.m_sbox4[nLo & 255] ^ this.m_pbox[11];
+      // line 456
+      nLo ^= (this.m_sbox1[nHi >>> 24] + this.m_sbox2[nHi >>> 16 & 255] ^ this.m_sbox3[nHi >>> 8 & 255]) + this.m_sbox4[nHi & 255] ^ this.m_pbox[10];
+      // line 457
+      nHi ^= (this.m_sbox1[nLo >>> 24] + this.m_sbox2[nLo >>> 16 & 255] ^ this.m_sbox3[nLo >>> 8 & 255]) + this.m_sbox4[nLo & 255] ^ this.m_pbox[9];
+      // line 458
+      nLo ^= (this.m_sbox1[nHi >>> 24] + this.m_sbox2[nHi >>> 16 & 255] ^ this.m_sbox3[nHi >>> 8 & 255]) + this.m_sbox4[nHi & 255] ^ this.m_pbox[8];
+      // line 459
+      nHi ^= (this.m_sbox1[nLo >>> 24] + this.m_sbox2[nLo >>> 16 & 255] ^ this.m_sbox3[nLo >>> 8 & 255]) + this.m_sbox4[nLo & 255] ^ this.m_pbox[7];
+      // line 460
+      nLo ^= (this.m_sbox1[nHi >>> 24] + this.m_sbox2[nHi >>> 16 & 255] ^ this.m_sbox3[nHi >>> 8 & 255]) + this.m_sbox4[nHi & 255] ^ this.m_pbox[6];
+      // line 461
+      nHi ^= (this.m_sbox1[nLo >>> 24] + this.m_sbox2[nLo >>> 16 & 255] ^ this.m_sbox3[nLo >>> 8 & 255]) + this.m_sbox4[nLo & 255] ^ this.m_pbox[5];
+      // line 462
+      nLo ^= (this.m_sbox1[nHi >>> 24] + this.m_sbox2[nHi >>> 16 & 255] ^ this.m_sbox3[nHi >>> 8 & 255]) + this.m_sbox4[nHi & 255] ^ this.m_pbox[4];
+      // line 463
+      nHi ^= (this.m_sbox1[nLo >>> 24] + this.m_sbox2[nLo >>> 16 & 255] ^ this.m_sbox3[nLo >>> 8 & 255]) + this.m_sbox4[nLo & 255] ^ this.m_pbox[3];
+      // line 464
+      nLo ^= (this.m_sbox1[nHi >>> 24] + this.m_sbox2[nHi >>> 16 & 255] ^ this.m_sbox3[nHi >>> 8 & 255]) + this.m_sbox4[nHi & 255] ^ this.m_pbox[2];
+      // line 465
+      nHi ^= (this.m_sbox1[nLo >>> 24] + this.m_sbox2[nLo >>> 16 & 255] ^ this.m_sbox3[nLo >>> 8 & 255]) + this.m_sbox4[nLo & 255] ^ this.m_pbox[1];
+      // line 467
+      return Blowfish.access$200(nHi, nLo ^ this.m_pbox[0]);
+    }
+    
+    public void encrypt(byte[] inbuffer, byte[] outbuffer) {
+      // line 478
+      int nLen = inbuffer.length;
+      // line 480
+      for (int nI = 0; nI < nLen; nI += 8) {
+        // line 483
+        long lTemp = Blowfish.access$300(inbuffer, nI);
+        // line 484
+        lTemp = this.encryptBlock(lTemp);
+        // line 485
+        Blowfish.access$400(lTemp, outbuffer, nI);
+      }
+      // line 487
+    }
+    
+    public void encrypt(byte[] buffer) {
+      // line 495
+      int nLen = buffer.length;
+      // line 497
+      for (int nI = 0; nI < nLen; nI += 8) {
+        // line 500
+        long lTemp = Blowfish.access$300(buffer, nI);
+        // line 501
+        lTemp = this.encryptBlock(lTemp);
+        // line 502
+        Blowfish.access$400(lTemp, buffer, nI);
+      }
+      // line 504
+    }
+    
+    public void encrypt(int[] inbuffer, int[] outbuffer) {
+      // line 514
+      int nLen = inbuffer.length;
+      // line 516
+      for (int nI = 0; nI < nLen; nI += 2) {
+        // line 519
+        long lTemp = Blowfish.access$500(inbuffer, nI);
+        // line 520
+        lTemp = this.encryptBlock(lTemp);
+        // line 521
+        Blowfish.access$600(lTemp, outbuffer, nI);
+      }
+      // line 523
+    }
+    
+    public void encrypt(int[] buffer) {
+      // line 531
+      int nLen = buffer.length;
+      // line 533
+      for (int nI = 0; nI < nLen; nI += 2) {
+        // line 536
+        long lTemp = Blowfish.access$500(buffer, nI);
+        // line 537
+        lTemp = this.encryptBlock(lTemp);
+        // line 538
+        Blowfish.access$600(lTemp, buffer, nI);
+      }
+      // line 540
+    }
+    
+    public void encrypt(long[] inbuffer, long[] outbuffer) {
+      // line 548
+      int nLen = inbuffer.length;
+      // line 549
+      for (int nI = 0; nI < nLen; nI++) {
+        // line 551
+        outbuffer[nI] = this.encryptBlock(inbuffer[nI]);
+      }
+      // line 553
+    }
+    
+    public void encrypt(long[] buffer) {
+      // line 560
+      int nLen = buffer.length;
+      // line 561
+      for (int nI = 0; nI < nLen; nI++) {
+        // line 563
+        buffer[nI] = this.encryptBlock(buffer[nI]);
+      }
+      // line 565
+    }
+    
+    public void decrypt(byte[] inbuffer, byte[] outbuffer) {
+      // line 576
+      int nLen = inbuffer.length;
+      // line 578
+      for (int nI = 0; nI < nLen; nI += 8) {
+        // line 581
+        long lTemp = Blowfish.access$300(inbuffer, nI);
+        // line 582
+        lTemp = this.decryptBlock(lTemp);
+        // line 583
+        Blowfish.access$400(lTemp, outbuffer, nI);
+      }
+      // line 585
+    }
+    
+    public void decrypt(byte[] buffer) {
+      // line 593
+      int nLen = buffer.length;
+      // line 595
+      for (int nI = 0; nI < nLen; nI += 8) {
+        // line 598
+        long lTemp = Blowfish.access$300(buffer, nI);
+        // line 599
+        lTemp = this.decryptBlock(lTemp);
+        // line 600
+        Blowfish.access$400(lTemp, buffer, nI);
+      }
+      // line 602
+    }
+    
+    public void decrypt(int[] inbuffer, int[] outbuffer) {
+      // line 613
+      int nLen = inbuffer.length;
+      // line 615
+      for (int nI = 0; nI < nLen; nI += 2) {
+        // line 618
+        long lTemp = Blowfish.access$500(inbuffer, nI);
+        // line 619
+        lTemp = this.decryptBlock(lTemp);
+        // line 620
+        Blowfish.access$600(lTemp, outbuffer, nI);
+      }
+      // line 622
+    }
+    
+    public void decrypt(int[] buffer) {
+      // line 631
+      int nLen = buffer.length;
+      // line 633
+      for (int nI = 0; nI < nLen; nI += 2) {
+        // line 636
+        long lTemp = Blowfish.access$500(buffer, nI);
+        // line 637
+        lTemp = this.decryptBlock(lTemp);
+        // line 638
+        Blowfish.access$600(lTemp, buffer, nI);
+      }
+      // line 640
+    }
+    
+    public void decrypt(long[] inbuffer, long[] outbuffer) {
+      // line 650
+      int nLen = inbuffer.length;
+      // line 651
+      for (int nI = 0; nI < nLen; nI++) {
+        // line 653
+        outbuffer[nI] = this.decryptBlock(inbuffer[nI]);
+      }
+      // line 655
+    }
+    
+    public void decrypt(long[] buffer) {
+      // line 663
+      int nLen = buffer.length;
+      // line 664
+      for (int nI = 0; nI < nLen; nI++) {
+        // line 666
+        buffer[nI] = this.decryptBlock(buffer[nI]);
+      }
+      // line 668
+    }
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/crypttest/BlowfishTest
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.crypttest;
+
+// Source: BlowfishTest.java
+// Version: 52.0
+import dev.sim0n.app.test.Test;
+
+public class BlowfishTest implements Test {
+  public void run() {
+    // line 11
+    System.out.println("Testing blowfish");
+    // line 13
+    Blowfish blowfish = new Blowfish("jHASf72183hjASf123");
+    // line 16
+    String encryptedString = "5f45e43ca774e1d2611c6fc31c7e4b11ef4780e0ba9ba304b9da8b28bc86582e6745624bb00bfbc7a71f97a1e708e13bcfd6f700d77216680a52dc1d16e3a9dc2747a26466eb273d";
+    // line 17
+    String decryptedString = blowfish.decryptString(encryptedString);
+    // line 19
+    String test = "5f45e43ca774e1d2611c6fc31c7e4b11ef4780e0ba9ba304b9da8b28bc86582e6745624bb00bfbc7a71f97a1e708e13bcfd6f700d77216680a52dc1d16e3a9dc2747a26466eb273d5f45e43ca774e1d2611c6fc31c7e4b11ef4780e0ba9ba304b9da8b28bc86582e6745624bb00bfbc7a71f97a1e708e13bcfd6f700d77216680a52dc1d16e3a9dc2747a26466eb273d";
+    // line 20
+    boolean successfulStringCompare = test.equals(encryptedString + encryptedString);
+    // line 22
+    if (successfulStringCompare == 0) {
+      // line 23
+      throw new IllegalStateException("String comparison failed");
+    }
+    // line 26
+    boolean successfulDecrypt = decryptedString.equals("hello world 123 1605479835458");
+    // line 28
+    if (successfulDecrypt == 0) {
+      // line 29
+      throw new IllegalStateException("String decryption failed");
+    }
+    // line 32
+    System.out.println("Successfully tested blowfish");
+    // line 33
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/enumtest/EnumConstant
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.enumtest;
+
+// Source: EnumConstant.java
+// Version: 52.0
+public enum EnumConstant {
+  HELLO,
+  WORLD,
+  FROM,
+  ENUM
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/enumtest/EnumConstantsTest
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.enumtest;
+
+// Source: EnumConstantsTest.java
+// Version: 52.0
+import dev.sim0n.app.test.Test;
+
+public class EnumConstantsTest implements Test {
+  public void run() {
+    // line 11
+    EnumConstant[] var1 = (EnumConstant[]) EnumConstant.class.getEnumConstants();
+    int var2 = var1.length;
+    for (int var3 = 0; var3 < var2; var3++) {
+      EnumConstant constant = var1[var3];
+      // line 12
+      System.out.println(constant);
+    }
+    // line 14
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/evaluation/Evaluation
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.evaluation;
+
+// Source: Evaluation.java
+// Version: 52.0
+import java.util.function.Consumer;
+
+public class Evaluation<T extends Number> {
+  private final T first;
+  private final T second;
+  private final Consumer<T> evaluator;
+  
+  public T getFirst() {
+    // line 14
+    return this.first;
+  }
+  
+  public T getSecond() {
+    // line 14
+    return this.second;
+  }
+  
+  public Consumer<T> getEvaluator() {
+    // line 16
+    return this.evaluator;
+  }
+  
+  public Evaluation(T first, T second, Consumer<T> evaluator) {
+    // line 12
+    this.first = first;
+    this.second = second;
+    this.evaluator = evaluator;
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/evaluation/EvaluationTest
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.evaluation;
+
+// Source: EvaluationTest.java
+// Version: 52.0
+import dev.sim0n.app.test.Test;
+import java.security.SecureRandom;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class EvaluationTest implements Test {
+  private static final SecureRandom RANDOM;
+  
+  public void run() {
+    // line 20
+    System.out.println("Running evaluation test");
+    // line 21
+    Supplier randomInt = () -> 1 + RANDOM.nextInt(20);
+    // line 22
+    Supplier randomIntMathOp = () -> RANDOM.nextInt(dev.sim0n.app.test.impl.evaluation.operation.IntMathOperation.values().length);
+    // line 24
+    // line 31
+    List evaluations = (List) Stream.generate(() -> new dev.sim0n.app.test.impl.evaluation.Evaluation((Number) randomInt.get(), (Number) randomInt.get(), arg -> {
+    dev.sim0n.app.test.impl.evaluation.operation.IntMathOperation op = dev.sim0n.app.test.impl.evaluation.operation.IntMathOperation.values()[RANDOM.nextInt(dev.sim0n.app.test.impl.evaluation.operation.IntMathOperation.values().length)];
+    int first = (Integer) randomInt.get().intValue();
+    int second = (Integer) randomInt.get().intValue();
+    System.out.println(first + " " + op.getDesc() + " " + second + " = " + op.evaluate(first, second));
+})).limit(5).collect(Collectors.toList());
+    // line 33
+    evaluations.forEach(arg -> arg.getEvaluator().accept(randomIntMathOp.get()));
+    // line 35
+    System.out.println("Finished evaluation test");
+    // line 36
+  }
+  
+  static {
+    // line 16
+    RANDOM = new SecureRandom();
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/evaluation/operation/IntMathOperation
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.evaluation.operation;
+
+// Source: IntMathOperation.java
+// Version: 52.0
+public enum IntMathOperation {
+  ADD("+") {
+    public int evaluate(int first, int second) {
+      return first + second;
+    }
+  },
+  SUB("-") {
+    public int evaluate(int first, int second) {
+      return first - second;
+    }
+  },
+  DIV("/") {
+    public int evaluate(int first, int second) {
+      return first / second;
+    }
+  },
+  REM("%") {
+    public int evaluate(int first, int second) {
+      return first % second;
+    }
+  },
+  MUL("*") {
+    public int evaluate(int first, int second) {
+      return first * second;
+    }
+  },
+  XOR("^") {
+    public int evaluate(int first, int second) {
+      return first ^ second;
+    }
+  };
+  
+  private final String desc;
+  
+  public abstract int evaluate(int arg0, int arg1);
+  
+  public String getDesc() {
+    // line 49
+    return this.desc;
+  }
+  
+  IntMathOperation(String desc) {
+    // line 10
+    this.desc = desc;
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/fizzbuzz/FizzBuzzTest
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.fizzbuzz;
+
+// Source: FizzBuzzTest.java
+// Version: 52.0
+import codes.som.oof4j.fizzbuzz.enterprise.EnterpriseFizzBuzzCommandLineResultSubscriber;
+import codes.som.oof4j.fizzbuzz.enterprise.EnterpriseFizzBuzzExecutionEnvironment;
+import codes.som.oof4j.fizzbuzz.enterprise.computation.EnterpriseFizzBuzzComputationFactory;
+import codes.som.oof4j.fizzbuzz.enterprise.results.FizzBuzzResultPublisher;
+import dev.sim0n.app.test.Test;
+
+public class FizzBuzzTest implements Test {
+  public void run() {
+    // line 16
+    EnterpriseFizzBuzzExecutionEnvironment.getInstance().setIterations(2);
+    // line 18
+    Runnable task = EnterpriseFizzBuzzComputationFactory.buildComputationTask();
+    // line 19
+    (FizzBuzzResultPublisher) task.registerSubscriber(new EnterpriseFizzBuzzCommandLineResultSubscriber());
+    // line 21
+    task.run();
+    // line 22
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/flow/AES
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.flow;
+
+// Source: AES.java
+// Version: 52.0
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+
+public class AES {
+  private static final char[] HEX_ARRAY;
+  
+  public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+    // line 19
+    String plainText = "Hello World";
+    // line 20
+    SecretKey secKey = AES.getSecretEncryptionKey();
+    // line 21
+    byte[] cipherText = AES.encryptText(plainText, secKey);
+    // line 22
+    String decryptedText = AES.decryptText(cipherText, secKey);
+    // line 24
+    System.out.println("Original Text: " + plainText);
+    // line 25
+    System.out.println("AES Key (Hex Form): " + AES.bytesToHex(secKey.getEncoded()));
+    // line 26
+    System.out.println("Encrypted Text (Hex Form): " + AES.bytesToHex(cipherText));
+    // line 27
+    System.out.println("Decrypted Text: " + decryptedText);
+    // line 28
+  }
+  
+  public static SecretKey getSecretEncryptionKey() throws NoSuchAlgorithmException {
+    // line 38
+    KeyGenerator aesKeyGenerator = KeyGenerator.getInstance("AES");
+    // line 39
+    aesKeyGenerator.init(128);
+    // line 40
+    return aesKeyGenerator.generateKey();
+  }
+  
+  public static byte[] encryptText(String plainText, SecretKey secKey) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    // line 57
+    Cipher aesCipher = Cipher.getInstance("AES");
+    // line 58
+    aesCipher.init(1, secKey);
+    // line 59
+    return aesCipher.doFinal(plainText.getBytes());
+  }
+  
+  public static String decryptText(byte[] byteCipherText, SecretKey secKey) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    // line 71
+    Cipher aesCipher = Cipher.getInstance("AES");
+    // line 72
+    aesCipher.init(2, secKey);
+    // line 73
+    byte[] bytePlainText = aesCipher.doFinal(byteCipherText);
+    // line 74
+    return new String(bytePlainText);
+  }
+  
+  public static String bytesToHex(byte[] bytes) {
+    // line 85
+    char[] hexChars = new char[bytes.length * 2];
+    // line 86
+    for (int j = 0; j < bytes.length; j++) {
+      // line 87
+      int v = bytes[j] & 255;
+      // line 88
+      hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+      // line 89
+      hexChars[j * 2 + 1] = HEX_ARRAY[v & 15];
+    }
+    // line 91
+    return new String(hexChars);
+  }
+  
+  static {
+    // line 11
+    HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/flow/OpaqueConditionTest
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.flow;
+
+// Source: OpaqueConditionTest.java
+// Version: 52.0
+import dev.sim0n.app.test.Test;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+public class OpaqueConditionTest implements Test {
+  private static final byte[] data;
+  
+  public void run() {
+    // line 19
+    System.out.println("Testing opaque condition");
+    // line 21
+    int stage = 0;
+    try {
+      // line 24
+      stage = 1;
+      // line 27
+      AES.main(new String[0]);
+      // line 28
+      stage = 2;
+      // line 30
+      // unsupported stmt: if (dev.sim0n.app.test.impl.flow.OpaqueConditionTest.data[0] != 0) goto block6 else block7
+      // line 43
+      throw new IllegalArgumentException("Failed test! Stage: " + stage);
+      // line 31
+      // unsupported stmt: switch(dev.sim0n.app.test.impl.flow.OpaqueConditionTest.data[1]) { 0: block9, 1: block10, default: block8 }
+      // line 39
+      stage = -5;
+      // line 33
+      stage = -2;
+      // line 36
+      stage = 3;
+      // line 34
+      // line 46
+      this.self(stage);
+      // line 37
+      // line 40
+      // line 48
+      throw new IllegalArgumentException("Failed test! Stage: " + stage);
+    } catch (IllegalStateException e) {
+      // line 49
+      // line 50
+      stage = 4;
+      // line 55
+      // line 57
+      // unsupported stmt: if (dev.sim0n.app.test.impl.flow.OpaqueConditionTest.data[2] == var1) goto block23 else block24
+      // line 58
+      throw new IllegalArgumentException("Failed test! Stage: " + stage);
+      // line 60
+      return;
+    } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
+      // line 51
+      // line 52
+      e.printStackTrace();
+      // line 54
+      stage = -1;
+      // line 57
+      // unsupported stmt: if (dev.sim0n.app.test.impl.flow.OpaqueConditionTest.data[2] == var1) goto block23 else block24
+      // line 58
+      throw new IllegalArgumentException("Failed test! Stage: " + stage);
+      // line 60
+      return;
+    }
+  }
+  
+  private void self(int stage) {
+    // line 63
+    if (stage != 3) {
+      // line 65
+      return;
+    } else {
+      // line 64
+      throw new IllegalStateException("stage=" + stage);
+    }
+  }
+  
+  static {
+    // line 15
+    data = new byte[] {0, 1, 4, 3, 2};
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/flow/WeirdLoopTest
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.flow;
+
+// Source: WeirdLoopTest.java
+// Version: 52.0
+import dev.sim0n.app.test.Test;
+import java.util.Random;
+
+public class WeirdLoopTest implements Test {
+  private int index;
+  
+  public void run() {
+    // line 15
+    System.out.println("Starting weird loop test...");
+    // line 16
+    int[] targets = new int[1 + new Random().nextInt(99)];
+    // line 19
+    if (targets.length >= 100) {
+      // line 20
+      throw new IllegalStateException("Targets must be less than 100 in size!");
+    }
+    // line 23
+    int i = 0;
+    while (i < targets.length) {
+      // line 24
+      targets[i] = new Random().nextInt();
+      // line 23
+      i++;
+    }
+    // line 27
+    i = this.index;
+    // line 28
+    for (int depth = 0; targets[this.index] == targets[i]; depth++) {
+      // line 29
+      // line 30
+      this.index = new Random().nextInt(targets.length);
+      // line 32
+      if (depth > 100) {
+        // line 33
+        throw new IllegalStateException("Depth overflow");
+      }
+    }
+    // line 39
+    if (i == this.index) {
+      // line 40
+      throw new IllegalStateException("Index cannot be duplicated!");
+    }
+    // line 43
+    System.out.println("Finished weird loop test!");
+    // line 44
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/inheritance/ClassA
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.inheritance;
+
+// Source: ClassA.java
+// Version: 52.0
+public interface ClassA {
+  abstract void methodA();
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/inheritance/ClassB
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.inheritance;
+
+// Source: ClassB.java
+// Version: 52.0
+public class ClassB implements ClassA {
+  public void methodA() {
+    // line 10
+    this.methodB();
+    // line 11
+  }
+  
+  public void methodB() {
+    // line 14
+    System.out.println("Hello World from Method B");
+    // line 15
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/inheritance/InheritanceTest
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.inheritance;
+
+// Source: InheritanceTest.java
+// Version: 52.0
+import dev.sim0n.app.test.Test;
+
+public class InheritanceTest implements Test {
+  public void run() {
+    // line 11
+    ClassA classA = new ClassB();
+    // line 13
+    classA.methodA();
+    // line 14
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/interfaceoverlap/InterfaceA
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.interfaceoverlap;
+
+// Source: InterfaceA.java
+// Version: 52.0
+public interface InterfaceA {
+  abstract void methodA();
+  
+  abstract void methodB();
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/interfaceoverlap/InterfaceB
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.interfaceoverlap;
+
+// Source: InterfaceB.java
+// Version: 52.0
+public interface InterfaceB {
+  abstract void methodB();
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/interfaceoverlap/InterfaceOverlap
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.interfaceoverlap;
+
+// Source: InterfaceOverlap.java
+// Version: 52.0
+public class InterfaceOverlap implements InterfaceA, InterfaceB {
+  public void methodA() {
+    // line 9
+    System.out.println("Hello world from method A");
+    // line 10
+  }
+  
+  public void methodB() {
+    // line 14
+    System.out.println("Hello world from method B");
+    // line 15
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/interfaceoverlap/InterfaceOverlapTest
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.interfaceoverlap;
+
+// Source: InterfaceOverlapTest.java
+// Version: 52.0
+import dev.sim0n.app.test.Test;
+
+public class InterfaceOverlapTest implements Test {
+  public void run() {
+    // line 11
+    System.out.println("Running interface overlap test...");
+    // line 12
+    InterfaceOverlap interfaceOverlap = new InterfaceOverlap();
+    // line 13
+    interfaceOverlap.methodA();
+    // line 14
+    interfaceOverlap.methodB();
+    // line 15
+    System.out.println("Finished interface overlap test!");
+    // line 16
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/numbers/NumberComparisonTest
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.numbers;
+
+// Source: NumberComparisonTest.java
+// Version: 52.0
+import dev.sim0n.app.test.Test;
+import dev.sim0n.iridium.math.statistic.Regression;
+import dev.sim0n.iridium.math.statistic.Stats;
+
+public class NumberComparisonTest implements Test {
+  public void run() {
+    // line 15
+    int[] intValues = new int[] {813, 432, 784, 409, 600, 552, 923, 51, 275, 988, 774, 74, 693, 892, 957, 398, 636, 530, 472, 769, 106, 259, 450, 893, 355};
+    // line 16
+    double[] doubleValues = new double[] {15.354279285687706, 5.797782664265068, 8.683696317015794, 1.9817656768587806, 3.535287429360438, 4.220760053178631, 10.807260410843776, 9.79012425459241, 9.862795945665074, 0.74113233949422, 2.422188626186955, 9.624071224255548, 0.21480131492236743, 10.736554500849767, 2.7573095161824757, 16.295928424685112, 1.5007304056520934, 11.312333434915566, 0.2805255257633217, 2.158320252411026, 0, 8.556101546454709, 1.1028629585647993, 15.846849796405586, 5.932633085882487};
+    // line 18
+    double[] randomDoubles = new double[doubleValues.length];
+    // line 20
+    int i = 0;
+    while (i < randomDoubles.length) {
+      // line 21
+      randomDoubles[i] = Math.random();
+      // line 20
+      i++;
+    }
+    // line 24
+    i = 0;
+    // line 25
+    int i = 0;
+    while (i < intValues.length) {
+      // line 26
+      int intValue = intValues[i];
+      // line 27
+      double doubleValue = doubleValues[i];
+      // line 29
+      if (Double.compare((double) intValue, doubleValue) <= 0) {
+        // line 31
+        if (Double.compare((double) intValue, doubleValue) < 0) {
+        }
+      } else {
+        // line 30
+        i++;
+      }
+      // line 25
+      i++;
+    }
+    // line 36
+    i = Stats.stdDev(doubleValues);
+    // line 37
+    doubleValue = Stats.kurtosis(doubleValues);
+    // line 39
+    System.out.println("stddev=" + i);
+    // line 40
+    System.out.println("kurtosis=" + doubleValue);
+    // line 41
+    System.out.println("intercept=" + Regression.leastSquares(doubleValues, randomDoubles).intercept());
+    // line 43
+    if (i - intValues.length != 0) {
+      // line 44
+      throw new IllegalArgumentException("Failed number comparison test! Occurrences: " + i);
+    }
+    // line 46
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/trycatch/TryCatchTest
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.trycatch;
+
+// Source: TryCatchTest.java
+// Version: 52.0
+import dev.sim0n.app.test.Test;
+
+public class TryCatchTest implements Test {
+  private static final String string = "DO_NOT_ENCRYPT_THIS_STRING";
+  
+  public void run() {
+    try {
+      // line 14
+      System.out.println("Hello World from inside try catch ");
+    } catch (Exception e) {
+      // line 15
+      // line 16
+      e.printStackTrace();
+    }
+    // line 17
+    // line 19
+    System.out.println("Hello World from outside try catch!");
+    // line 20
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/visitor/AppVisitor
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.visitor;
+
+// Source: AppVisitor.java
+// Version: 52.0
+import java.io.PrintStream;
+
+public class AppVisitor implements Visitor {
+  public void visit(PrintStream printStream) {
+    // line 12
+    printStream.println("Hello world from Visitor!");
+    // line 13
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/visitor/Visitable
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.visitor;
+
+// Source: Visitable.java
+// Version: 52.0
+public interface Visitable {
+  public static final String hello = "";
+  
+  abstract void accept(Visitor arg0);
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/visitor/VisitableApp
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.visitor;
+
+// Source: VisitableApp.java
+// Version: 52.0
+public class VisitableApp implements Visitable {
+  public void accept(Visitor visitor) {
+    // line 9
+    visitor.visit(System.out);
+    // line 10
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/visitor/Visitor
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.visitor;
+
+// Source: Visitor.java
+// Version: 52.0
+import java.io.PrintStream;
+
+public interface Visitor {
+  abstract void visit(PrintStream arg0);
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/app/test/impl/visitor/VisitorTest
+--------------------------------------------------------------------------------
+package dev.sim0n.app.test.impl.visitor;
+
+// Source: VisitorTest.java
+// Version: 52.0
+import dev.sim0n.app.test.Test;
+
+public class VisitorTest implements Test {
+  public void run() {
+    // line 11
+    Visitor visitor = new AppVisitor();
+    // line 12
+    Visitable visitable = new VisitableApp();
+    // line 14
+    visitable.accept(visitor);
+    // line 15
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/collection/map/ClassToInstanceMapBuilder
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.collection.map;
+
+// Source: ClassToInstanceMapBuilder.java
+// Version: 52.0
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+public class ClassToInstanceMapBuilder<T> {
+  private final Map<Class<?>, T> map;
+  
+  public ClassToInstanceMapBuilder() {
+    // line 13
+    // line 14
+    this.map = new HashMap();
+  }
+  
+  public ClassToInstanceMapBuilder<T> put(T instance) {
+    // line 17
+    this.map.put(instance.getClass(), instance);
+    // line 19
+    return this;
+  }
+  
+  public ClassToInstanceMapBuilder<T> build() {
+    // line 23
+    return this;
+  }
+  
+  public <Type extends T> Type getInstance(Class<Type> clazz) {
+    // line 27
+    return clazz.cast(this.map.get(clazz));
+  }
+  
+  public Collection<T> values() {
+    // line 31
+    return this.map.values();
+  }
+  
+  public Map<Class<?>, T> getMap() {
+    // line 14
+    return this.map;
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/function/DoubleBiFunction
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.function;
+
+// Source: DoubleBiFunction.java
+// Version: 52.0
+@FunctionalInterface
+public interface DoubleBiFunction<T, U> {
+  abstract double apply(T arg0, U arg1);
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/function/DoubleObjFunction
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.function;
+
+// Source: DoubleObjFunction.java
+// Version: 52.0
+@FunctionalInterface
+public interface DoubleObjFunction<T> {
+  abstract double apply(T arg0);
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/function/FloatBiFunction
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.function;
+
+// Source: FloatBiFunction.java
+// Version: 52.0
+@FunctionalInterface
+public interface FloatBiFunction<T, U> {
+  abstract float apply(T arg0, U arg1);
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/function/FloatObjFunction
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.function;
+
+// Source: FloatObjFunction.java
+// Version: 52.0
+@FunctionalInterface
+public interface FloatObjFunction<T> {
+  abstract float apply(T arg0);
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/function/IntBiFunction
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.function;
+
+// Source: IntBiFunction.java
+// Version: 52.0
+@FunctionalInterface
+public interface IntBiFunction<T, U> {
+  abstract int apply(T arg0, U arg1);
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/function/IntObjFunction
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.function;
+
+// Source: IntObjFunction.java
+// Version: 52.0
+@FunctionalInterface
+public interface IntObjFunction<T> {
+  abstract int apply(T arg0);
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/function/TriFunction
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.function;
+
+// Source: TriFunction.java
+// Version: 52.0
+@FunctionalInterface
+public interface TriFunction<T, U, V, R> {
+  abstract R apply(T arg0, U arg1, V arg2);
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/GCD
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math;
+
+// Source: GCD.java
+// Version: 52.0
+public final class GCD {
+  public static double of(double a, double b, double base) {
+    // line 12
+    if (Double.compare(a, b) < 0) {
+      // line 13
+      return GCD.of(b, a, base);
+    }
+    // line 15
+    if (Double.compare(Math.abs(b), base) >= 0) {
+      return a;
+    } else {
+      return a;
+    }
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/helper/CommonMathFunctions
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.helper;
+
+// Source: CommonMathFunctions.java
+// Version: 52.0
+public interface CommonMathFunctions {
+  default double sqrt(double value) {
+    // line 13
+    return Math.sqrt(value);
+  }
+  
+  default double square(double value) {
+    // line 22
+    return Math.pow(value, 2);
+  }
+  
+  default double cube(double value) {
+    // line 31
+    return Math.pow(value, 3);
+  }
+  
+  default double quartic(double value) {
+    // line 39
+    return Math.pow(value, 4);
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/Regression
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic;
+
+// Source: Regression.java
+// Version: 52.0
+import dev.sim0n.iridium.math.statistic.regression.RegressionResult;
+import dev.sim0n.iridium.math.statistic.regression.linear.LinearRegression;
+import dev.sim0n.iridium.math.statistic.regression.linear.impl.LeastSquares;
+
+public final class Regression {
+  private static final LinearRegression LEAST_SQUARES;
+  
+  public static RegressionResult leastSquares(double[] x, double[] y) {
+    // line 22
+    return LEAST_SQUARES.evaluate(x, y);
+  }
+  
+  static {
+    // line 13
+    LEAST_SQUARES = new LeastSquares();
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/Stats
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic;
+
+// Source: Stats.java
+// Version: 52.0
+import dev.sim0n.iridium.math.statistic.function.StatisticFunction;
+import dev.sim0n.iridium.math.statistic.function.impl.Entropy;
+import dev.sim0n.iridium.math.statistic.function.impl.Kurtosis;
+import dev.sim0n.iridium.math.statistic.function.impl.Max;
+import dev.sim0n.iridium.math.statistic.function.impl.Mean;
+import dev.sim0n.iridium.math.statistic.function.impl.Midpoint;
+import dev.sim0n.iridium.math.statistic.function.impl.Min;
+import dev.sim0n.iridium.math.statistic.function.impl.Mode;
+import dev.sim0n.iridium.math.statistic.function.impl.Range;
+import dev.sim0n.iridium.math.statistic.function.impl.Skewness;
+import dev.sim0n.iridium.math.statistic.function.impl.StandardDeviation;
+import dev.sim0n.iridium.math.statistic.function.impl.Sum;
+import dev.sim0n.iridium.math.statistic.function.impl.Variance;
+import java.util.Collection;
+
+public final class Stats {
+  private static final StatisticFunction ENTROPY;
+  private static final StatisticFunction KURTOSIS;
+  private static final StatisticFunction MAX;
+  private static final StatisticFunction MEAN;
+  private static final StatisticFunction MIDPOINT;
+  private static final StatisticFunction MIN;
+  private static final StatisticFunction MODE;
+  private static final StatisticFunction RANGE;
+  private static final StatisticFunction SKEWNESS;
+  private static final StatisticFunction STANDARD_DEVIATION;
+  private static final StatisticFunction SUM;
+  private static final StatisticFunction VARIANCE;
+  
+  public static double entropy(double[] data) {
+    // line 34
+    return ENTROPY.evaluate(data);
+  }
+  
+  public static double entropy(Collection<? extends Number> data) {
+    // line 44
+    return ENTROPY.evaluate(data);
+  }
+  
+  public static double kurtosis(double[] data) {
+    // line 54
+    return KURTOSIS.evaluate(data);
+  }
+  
+  public static double kurtosis(Collection<? extends Number> data) {
+    // line 64
+    return KURTOSIS.evaluate(data);
+  }
+  
+  public static double max(double[] data) {
+    // line 74
+    return MAX.evaluate(data);
+  }
+  
+  public static double max(Collection<? extends Number> data) {
+    // line 84
+    return MAX.evaluate(data);
+  }
+  
+  public static double mean(double[] data) {
+    // line 94
+    return MEAN.evaluate(data);
+  }
+  
+  public static double mean(Collection<? extends Number> data) {
+    // line 104
+    return MEAN.evaluate(data);
+  }
+  
+  public static double midpoint(double[] data) {
+    // line 114
+    return MIDPOINT.evaluate(data);
+  }
+  
+  public static double midpoint(Collection<? extends Number> data) {
+    // line 124
+    return MIDPOINT.evaluate(data);
+  }
+  
+  public static double min(double[] data) {
+    // line 134
+    return MIN.evaluate(data);
+  }
+  
+  public static double min(Collection<? extends Number> data) {
+    // line 144
+    return MIN.evaluate(data);
+  }
+  
+  public static double mode(double[] data) {
+    // line 154
+    return MODE.evaluate(data);
+  }
+  
+  public static double mode(Collection<? extends Number> data) {
+    // line 164
+    return MODE.evaluate(data);
+  }
+  
+  public static double range(double[] data) {
+    // line 174
+    return RANGE.evaluate(data);
+  }
+  
+  public static double range(Collection<? extends Number> data) {
+    // line 184
+    return RANGE.evaluate(data);
+  }
+  
+  public static double skewness(double[] data) {
+    // line 194
+    return SKEWNESS.evaluate(data);
+  }
+  
+  public static double skewness(Collection<? extends Number> data) {
+    // line 204
+    return SKEWNESS.evaluate(data);
+  }
+  
+  public static double stdDev(double[] data) {
+    // line 214
+    return STANDARD_DEVIATION.evaluate(data);
+  }
+  
+  public static double stdDev(Collection<? extends Number> data) {
+    // line 224
+    return STANDARD_DEVIATION.evaluate(data);
+  }
+  
+  public static double sum(double[] data) {
+    // line 234
+    return SUM.evaluate(data);
+  }
+  
+  public static double sum(Collection<? extends Number> data) {
+    // line 244
+    return SUM.evaluate(data);
+  }
+  
+  public static double variance(double[] data) {
+    // line 254
+    return VARIANCE.evaluate(data);
+  }
+  
+  public static double variance(Collection<? extends Number> data) {
+    // line 264
+    return VARIANCE.evaluate(data);
+  }
+  
+  static {
+    // line 14
+    ENTROPY = new Entropy();
+    // line 15
+    KURTOSIS = new Kurtosis();
+    // line 16
+    MAX = new Max();
+    // line 17
+    MEAN = new Mean();
+    // line 18
+    MIDPOINT = new Midpoint();
+    // line 19
+    MIN = new Min();
+    // line 20
+    MODE = new Mode();
+    // line 21
+    RANGE = new Range();
+    // line 22
+    SKEWNESS = new Skewness();
+    // line 23
+    STANDARD_DEVIATION = new StandardDeviation();
+    // line 24
+    SUM = new Sum();
+    // line 25
+    VARIANCE = new Variance();
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/AbstractStatisticFunction
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function;
+
+// Source: AbstractStatisticFunction.java
+// Version: 52.0
+import dev.sim0n.iridium.math.helper.CommonMathFunctions;
+
+public abstract class AbstractStatisticFunction implements StatisticFunction, CommonMathFunctions {
+  protected boolean biasCorrection;
+  
+  public <T extends AbstractStatisticFunction> T correctBias() {
+    // line 14
+    this.biasCorrection = 1;
+    // line 16
+    return this;
+  }
+  
+  public boolean isBiasCorrection() {
+    // line 11
+    return this.biasCorrection;
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/BiStatisticFunction
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function;
+
+// Source: BiStatisticFunction.java
+// Version: 52.0
+import dev.sim0n.iridium.math.helper.CommonMathFunctions;
+
+public interface BiStatisticFunction extends CommonMathFunctions {
+  abstract double evaluate(double[] arg0, double[] arg1);
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/StatisticFunction
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function;
+
+// Source: StatisticFunction.java
+// Version: 52.0
+import java.util.Collection;
+import java.util.List;
+
+public interface StatisticFunction {
+  abstract double evaluate(double[] arg0);
+  
+  default double evaluate(Collection<? extends Number> data) {
+    // line 27
+    return this.evaluate(data.stream().mapToDouble(Number::doubleValue).toArray());
+  }
+  
+  default double evaluate(double[] data, double mean) {
+    // line 41
+    throw new UnsupportedOperationException("Found no implementation for this method!");
+  }
+  
+  default boolean test(double[] data, double threshold) {
+    // line 51
+    if (Double.compare(this.evaluate(data), threshold) <= 0) {
+      return 1;
+    } else {
+      return 1;
+    }
+  }
+  
+  default boolean test(List<? extends Number> data, double threshold) {
+    // line 55
+    return this.test(data.stream().mapToDouble(Number::doubleValue).toArray(), threshold);
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/impl/Entropy
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function.impl;
+
+// Source: Entropy.java
+// Version: 52.0
+import dev.sim0n.iridium.math.statistic.function.AbstractStatisticFunction;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Entropy extends AbstractStatisticFunction {
+  private static final double LN_2;
+  
+  public double evaluate(double[] data) {
+    // line 33
+    double n = (double) data.length;
+    // line 35
+    if (Double.compare(n, 3) < 0) {
+      // line 36
+      return NaN;
+    }
+    // line 39
+    Map valueCounts = new HashMap();
+    // line 41
+    double entropy = data;
+    int var6 = entropy.length;
+    for (int var7 = 0; var7 < var6; var7++) {
+      double value = entropy[var7];
+      // line 42
+      valueCounts.put(value, (Integer) valueCounts.computeIfAbsent(value, arg -> 0).intValue() + 1);
+    }
+    // line 45
+    // line 46
+    // line 47
+    // line 48
+    entropy = valueCounts.values().stream().mapToDouble(arg -> (double) freq.intValue() / n).map(arg -> arg * (Math.log(arg) / LN_2)).sum();
+    // line 50
+    entropy = -entropy;
+    // line 52
+    return entropy;
+  }
+  
+  static {
+    // line 24
+    LN_2 = Math.log(2);
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/impl/Kurtosis
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function.impl;
+
+// Source: Kurtosis.java
+// Version: 52.0
+import dev.sim0n.iridium.math.statistic.function.AbstractStatisticFunction;
+import dev.sim0n.iridium.math.statistic.function.StatisticFunction;
+import java.util.Arrays;
+
+public class Kurtosis extends AbstractStatisticFunction {
+  private final StatisticFunction m1;
+  private final StatisticFunction m2;
+  
+  public Kurtosis() {
+    // line 29
+    // line 30
+    this.m1 = new Mean();
+    // line 31
+    this.m2 = new Variance();
+  }
+  
+  public double evaluate(double[] data) {
+    // line 40
+    double n = (double) data.length;
+    // line 42
+    if (Double.compare(n, 4) >= 0) {
+      // line 46
+      double mean = this.m1.evaluate(data);
+      // line 47
+      double stdDev = Math.sqrt(this.m2.evaluate(data, mean));
+      // line 48
+      // line 49
+      // line 50
+      double quarticDeltaSum = Arrays.stream(data).map(arg -> this.quartic(value - mean)).sum();
+      // line 52
+      double kurtosis = n * (n + 1) / (n - 1) / (n - 2) / (n - 3);
+      // line 53
+      kurtosis *= quarticDeltaSum / this.quartic(stdDev);
+      // line 54
+      kurtosis -= 3 * this.square(n - 1) / (n * (n - 3) - 2 * (n - 3));
+      // line 56
+      return kurtosis;
+    } else {
+      // line 43
+      return NaN;
+    }
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/impl/Max
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function.impl;
+
+// Source: Max.java
+// Version: 52.0
+import dev.sim0n.iridium.math.statistic.function.AbstractStatisticFunction;
+import java.util.Arrays;
+
+public class Max extends AbstractStatisticFunction {
+  public double evaluate(double[] data) {
+    // line 18
+    // line 19
+    // line 20
+    // line 18
+    return Arrays.stream(data).max().orElse(NaN);
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/impl/Mean
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function.impl;
+
+// Source: Mean.java
+// Version: 52.0
+import dev.sim0n.iridium.math.statistic.function.AbstractStatisticFunction;
+
+public class Mean extends AbstractStatisticFunction {
+  public double evaluate(double[] data) {
+    // line 26
+    int n = data.length;
+    // line 28
+    double mean = new Sum().evaluate(data);
+    // line 29
+    mean /= (double) n;
+    // line 31
+    return mean;
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/impl/Midpoint
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function.impl;
+
+// Source: Midpoint.java
+// Version: 52.0
+import dev.sim0n.iridium.math.statistic.function.AbstractStatisticFunction;
+
+public class Midpoint extends AbstractStatisticFunction {
+  public double evaluate(double[] data) {
+    // line 17
+    double max = new Max().evaluate(data);
+    // line 18
+    double min = new Min().evaluate(data);
+    // line 20
+    return (max + min) / 2;
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/impl/Min
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function.impl;
+
+// Source: Min.java
+// Version: 52.0
+import dev.sim0n.iridium.math.statistic.function.AbstractStatisticFunction;
+import java.util.Arrays;
+
+public class Min extends AbstractStatisticFunction {
+  public double evaluate(double[] data) {
+    // line 18
+    // line 19
+    // line 20
+    // line 18
+    return Arrays.stream(data).min().orElse(NaN);
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/impl/Mode
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function.impl;
+
+// Source: Mode.java
+// Version: 52.0
+import dev.sim0n.iridium.math.statistic.function.AbstractStatisticFunction;
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
+public class Mode extends AbstractStatisticFunction {
+  public double evaluate(double[] data) {
+    // line 34
+    int n = data.length;
+    // line 35
+    double[] sortedData = (double[]) data.clone();
+    // line 37
+    Arrays.sort(sortedData);
+    // line 39
+    // line 40
+    // line 45
+    double[] counts = IntStream.range(0, n).mapToDouble(arg -> (double) java.util.stream.IntStream.range(0, n).filter(arg -> {
+    if (Double.compare(sortedData[arg], sortedData[arg]) != 0) {
+      return 1;
+    } else {
+      return 1;
+    }
+}).count()).toArray();
+    // line 47
+    // line 48
+    // line 49
+    double mode = Arrays.stream(counts).max().orElse(NaN);
+    // line 51
+    return mode;
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/impl/Range
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function.impl;
+
+// Source: Range.java
+// Version: 52.0
+import dev.sim0n.iridium.math.statistic.function.AbstractStatisticFunction;
+
+public class Range extends AbstractStatisticFunction {
+  public double evaluate(double[] data) {
+    // line 26
+    double max = new Max().evaluate(data);
+    // line 27
+    double min = new Min().evaluate(data);
+    // line 29
+    return max - min;
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/impl/Skewness
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function.impl;
+
+// Source: Skewness.java
+// Version: 52.0
+import dev.sim0n.iridium.math.statistic.function.AbstractStatisticFunction;
+import dev.sim0n.iridium.math.statistic.function.StatisticFunction;
+import java.util.Arrays;
+
+public class Skewness extends AbstractStatisticFunction {
+  private final StatisticFunction m1;
+  private final StatisticFunction m2;
+  
+  public Skewness() {
+    // line 29
+    // line 30
+    this.m1 = new Mean();
+    // line 31
+    this.m2 = new Variance();
+  }
+  
+  public double evaluate(double[] data) {
+    // line 40
+    double n = (double) data.length;
+    // line 42
+    if (Double.compare(n, 3) >= 0) {
+      // line 46
+      double mean = this.m1.evaluate(data);
+      // line 47
+      double variance = this.m2.evaluate(data, mean);
+      // line 48
+      double stdDev = Math.sqrt(variance);
+      // line 49
+      // line 50
+      // line 51
+      double cubicDeltaSum = Arrays.stream(data).map(arg -> this.cube(value - mean)).sum();
+      // line 53
+      double skewness = n / (n - 1) / (n - 2);
+      // line 54
+      skewness *= cubicDeltaSum / (variance * stdDev);
+      // line 56
+      return skewness;
+    } else {
+      // line 43
+      return NaN;
+    }
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/impl/StandardDeviation
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function.impl;
+
+// Source: StandardDeviation.java
+// Version: 52.0
+import dev.sim0n.iridium.math.statistic.function.AbstractStatisticFunction;
+import dev.sim0n.iridium.math.statistic.function.StatisticFunction;
+
+public class StandardDeviation extends AbstractStatisticFunction {
+  private final StatisticFunction m2;
+  
+  public StandardDeviation() {
+    // line 17
+    // line 18
+    this.m2 = new Variance();
+  }
+  
+  public double evaluate(double[] data) {
+    // line 22
+    return this.sqrt(this.m2.evaluate(data));
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/impl/Sum
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function.impl;
+
+// Source: Sum.java
+// Version: 52.0
+import dev.sim0n.iridium.math.statistic.function.AbstractStatisticFunction;
+import java.util.Arrays;
+
+public class Sum extends AbstractStatisticFunction {
+  public double evaluate(double[] data) {
+    // line 19
+    return Arrays.stream(data).sum();
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/function/impl/Variance
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.function.impl;
+
+// Source: Variance.java
+// Version: 52.0
+import dev.sim0n.iridium.function.DoubleBiFunction;
+import dev.sim0n.iridium.function.DoubleObjFunction;
+import dev.sim0n.iridium.math.statistic.function.AbstractStatisticFunction;
+import dev.sim0n.iridium.math.statistic.function.StatisticFunction;
+import java.util.Objects;
+import java.util.Optional;
+
+public class Variance extends AbstractStatisticFunction {
+  private final StatisticFunction m1;
+  private final DoubleObjFunction<double[]> meanEvaluatorFunc;
+  private final DoubleBiFunction<double[], Optional<Double>> innerVarianceFunc;
+  
+  public Variance() {
+    // line 24
+    // line 25
+    this.m1 = new Mean();
+    // line 26
+    Objects.requireNonNull(this.m1);
+    this.meanEvaluatorFunc = [object Object]::evaluate;
+    // line 28
+    this.innerVarianceFunc = (arg0, arg1) -> {
+    int n = arg0.length;
+    double mean = (Double) arg1.orElse(this.meanEvaluatorFunc.apply(arg0)).doubleValue();
+    double variance = java.util.Arrays.stream(arg0).map(arg -> this.square(value - mean)).sum();
+    if (!this.biasCorrection) {
+      variance /= (double) (n - 1);
+      return variance;
+    } else {
+      variance /= (double) (n - 1);
+      return variance;
+    }
+};
+  }
+  
+  public double evaluate(double[] data) {
+    // line 47
+    return this.innerVarianceFunc.apply(data, Optional.empty());
+  }
+  
+  public double evaluate(double[] data, double mean) {
+    // line 58
+    return this.innerVarianceFunc.apply(data, Optional.of(mean));
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/regression/RegressionResult
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.regression;
+
+// Source: RegressionResult.java
+// Version: 52.0
+public class RegressionResult {
+  private final double slope;
+  private final double intercept;
+  private final double r2;
+  
+  public double slope() {
+    // line 18
+    return this.slope;
+  }
+  
+  public double intercept() {
+    // line 26
+    return this.intercept;
+  }
+  
+  public double determination() {
+    // line 33
+    return this.r2;
+  }
+  
+  public RegressionResult(double slope, double intercept, double r2) {
+    // line 8
+    this.slope = slope;
+    this.intercept = intercept;
+    this.r2 = r2;
+  }
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/regression/linear/AbstractLinearRegression
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.regression.linear;
+
+// Source: AbstractLinearRegression.java
+// Version: 52.0
+import dev.sim0n.iridium.math.helper.CommonMathFunctions;
+
+public abstract class AbstractLinearRegression implements LinearRegression, CommonMathFunctions {
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/regression/linear/LinearRegression
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.regression.linear;
+
+// Source: LinearRegression.java
+// Version: 52.0
+import dev.sim0n.iridium.math.statistic.regression.RegressionResult;
+
+public interface LinearRegression {
+  abstract RegressionResult evaluate(double[] arg0, double[] arg1);
+}
+
+--------------------------------------------------------------------------------
+// Class: dev/sim0n/iridium/math/statistic/regression/linear/impl/LeastSquares
+--------------------------------------------------------------------------------
+package dev.sim0n.iridium.math.statistic.regression.linear.impl;
+
+// Source: LeastSquares.java
+// Version: 52.0
+import dev.sim0n.iridium.function.DoubleBiFunction;
+import dev.sim0n.iridium.math.statistic.function.StatisticFunction;
+import dev.sim0n.iridium.math.statistic.function.impl.Mean;
+import dev.sim0n.iridium.math.statistic.regression.RegressionResult;
+import dev.sim0n.iridium.math.statistic.regression.linear.AbstractLinearRegression;
+import java.util.stream.IntStream;
+
+public class LeastSquares extends AbstractLinearRegression {
+  private final StatisticFunction m1;
+  private final DoubleBiFunction<double[], Double> squareSumFunc;
+  
+  public LeastSquares() {
+    // line 23
+    // line 24
+    this.m1 = new Mean();
+    // line 26
+    this.squareSumFunc = (arg0, arg1) -> java.util.Arrays.stream(arg0).map(arg -> this.square(arg - arg1.doubleValue())).sum();
+  }
+  
+  public RegressionResult evaluate(double[] x, double[] y) {
+    // line 41
+    if (x.length != y.length) {
+      // line 42
+      throw new IllegalArgumentException("x and y must be of the same length");
+    }
+    // line 45
+    if (x.length < 2) {
+      // line 46
+      throw new IllegalArgumentException("x and y must have at least 2 elements");
+    }
+    // line 49
+    int n = x.length;
+    // line 51
+    double meanX = this.m1.evaluate(x);
+    // line 52
+    double meanY = this.m1.evaluate(y);
+    // line 54
+    double squaredDeltaXSum = this.squareSumFunc.apply(x, meanX);
+    // line 55
+    double squaredDeltaYSum = this.squareSumFunc.apply(y, meanY);
+    // line 57
+    // line 58
+    // line 59
+    double squaredDeltaXYSum = IntStream.range(0, n).mapToDouble(arg -> (x[i] - meanX) * (meanY[i] - arg)).sum();
+    // line 61
+    double slope = squaredDeltaXYSum / squaredDeltaXSum;
+    // line 62
+    double intercept = meanY - slope * meanX;
+    // line 64
+    // line 65
+    // line 66
+    // line 67
+    double regressionSum = IntStream.range(0, n).mapToDouble(arg -> slope * intercept[i] + arg).map(arg -> this.square(fitY - meanY)).sum();
+    // line 69
+    double r2 = regressionSum / squaredDeltaYSum;
+    // line 71
+    return new RegressionResult(slope, intercept, r2);
+  }
+}

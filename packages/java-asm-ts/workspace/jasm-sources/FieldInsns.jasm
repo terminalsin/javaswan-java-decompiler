@@ -1,0 +1,104 @@
+/*
+ * Test class for field instructions (GETSTATIC, PUTSTATIC, GETFIELD, PUTFIELD)
+ */
+public class test/FieldInsns {
+    // Fields for testing
+    public static staticIntField I
+    public static staticLongField J
+    public static staticObjectField java/lang/Object
+    public instanceIntField I
+    public instanceObjectField java/lang/Object
+
+
+    // GETSTATIC instruction
+    public static testGetstatic()I {
+        
+        getstatic test/FieldInsns.staticIntField I
+        ireturn
+    }
+
+
+    public static testGetstaticLong()J {
+        
+        getstatic test/FieldInsns.staticLongField J
+        lreturn
+    }
+
+
+    public static testGetstaticObject()java/lang/Object {
+        
+        getstatic test/FieldInsns.staticObjectField java/lang/Object
+        areturn
+    }
+
+
+    // PUTSTATIC instruction
+    public static testPutstatic(I)V {
+        
+        iload 0
+        putstatic test/FieldInsns.staticIntField I
+        return
+    }
+
+
+    public static testPutstaticLong(J)V {
+        
+        lload 0
+        putstatic test/FieldInsns.staticLongField J
+        return
+    }
+
+
+    public static testPutstaticObject(java/lang/Object)V {
+        
+        aload 0
+        putstatic test/FieldInsns.staticObjectField java/lang/Object
+        return
+    }
+
+
+    // GETFIELD instruction
+    public testGetfield()I {
+        
+        aload 0
+        getfield test/FieldInsns.instanceIntField I
+        ireturn
+    }
+
+
+    public testGetfieldObject()java/lang/Object {
+        
+        aload 0
+        getfield test/FieldInsns.instanceObjectField java/lang/Object
+        areturn
+    }
+
+
+    // PUTFIELD instruction
+    public testPutfield(I)V {
+        
+        aload 0
+        iload 1
+        putfield test/FieldInsns.instanceIntField I
+        return
+    }
+
+
+    public testPutfieldObject(java/lang/Object)V {
+        
+        aload 0
+        aload 1
+        putfield test/FieldInsns.instanceObjectField java/lang/Object
+        return
+    }
+
+
+    // Constructor
+    public <init>()V {
+        
+        aload 0
+        invokespecial java/lang/Object.<init>()V
+        return
+    }
+
+}

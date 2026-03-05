@@ -1,0 +1,344 @@
+/*
+ * Test class for zero-operand instructions
+ */
+public class test/ZeroOperandInsns {
+    // NOP instruction
+    public static testNop()V {
+        
+        nop
+        return
+    }
+
+
+    // ACONST_NULL instruction
+    public static testAconstNull()java/lang/Object {
+        
+        aconst_null
+        areturn
+    }
+
+
+    // ICONST instructions (-1 to 5)
+    public static testIconstM1()I {
+        
+        iconst -1
+        ireturn
+    }
+
+
+    public static testIconst0()I {
+        
+        iconst 0
+        ireturn
+    }
+
+
+    public static testIconst1()I {
+        
+        iconst 1
+        ireturn
+    }
+
+
+    public static testIconst2()I {
+        
+        iconst 2
+        ireturn
+    }
+
+
+    public static testIconst3()I {
+        
+        iconst 3
+        ireturn
+    }
+
+
+    public static testIconst4()I {
+        
+        iconst 4
+        ireturn
+    }
+
+
+    public static testIconst5()I {
+        
+        iconst 5
+        ireturn
+    }
+
+
+    // LCONST instructions
+    public static testLconst0()J {
+        
+        lconst 0
+        lreturn
+    }
+
+
+    public static testLconst1()J {
+        
+        lconst 1
+        lreturn
+    }
+
+
+    // FCONST instructions
+    public static testFconst0()F {
+        
+        fconst 0
+        freturn
+    }
+
+
+    public static testFconst1()F {
+        
+        fconst 1
+        freturn
+    }
+
+
+    public static testFconst2()F {
+        
+        ldc 2.0
+        freturn
+    }
+
+
+    // DCONST instructions
+    public static testDconst0()D {
+        
+        dconst 0
+        dreturn
+    }
+
+
+    public static testDconst1()D {
+        
+        dconst 1
+        dreturn
+    }
+
+
+    // Stack manipulation
+    public static testPop(I)V {
+        
+        iload 0
+        pop
+        return
+    }
+
+
+    public static testPop2(J)V {
+        
+        lload 0
+        pop2
+        return
+    }
+
+
+    public static testDup(I)I {
+        
+        iload 0
+        dup
+        iadd
+        ireturn
+    }
+
+
+    public static testSwap(I, I)I {
+        
+        iload 0
+        iload 1
+        swap
+        isub
+        ireturn
+    }
+
+
+    // Arithmetic instructions
+    public static testIadd(I, I)I {
+        
+        iload 0
+        iload 1
+        iadd
+        ireturn
+    }
+
+
+    public static testIsub(I, I)I {
+        
+        iload 0
+        iload 1
+        isub
+        ireturn
+    }
+
+
+    public static testImul(I, I)I {
+        
+        iload 0
+        iload 1
+        imul
+        ireturn
+    }
+
+
+    public static testIdiv(I, I)I {
+        
+        iload 0
+        iload 1
+        idiv
+        ireturn
+    }
+
+
+    public static testIrem(I, I)I {
+        
+        iload 0
+        iload 1
+        irem
+        ireturn
+    }
+
+
+    public static testIneg(I)I {
+        
+        iload 0
+        ineg
+        ireturn
+    }
+
+
+    // Bitwise instructions
+    public static testIshl(I, I)I {
+        
+        iload 0
+        iload 1
+        ishl
+        ireturn
+    }
+
+
+    public static testIshr(I, I)I {
+        
+        iload 0
+        iload 1
+        ishr
+        ireturn
+    }
+
+
+    public static testIushr(I, I)I {
+        
+        iload 0
+        iload 1
+        iushr
+        ireturn
+    }
+
+
+    public static testIand(I, I)I {
+        
+        iload 0
+        iload 1
+        iand
+        ireturn
+    }
+
+
+    public static testIor(I, I)I {
+        
+        iload 0
+        iload 1
+        ior
+        ireturn
+    }
+
+
+    public static testIxor(I, I)I {
+        
+        iload 0
+        iload 1
+        ixor
+        ireturn
+    }
+
+
+    // Type conversion
+    public static testI2l(I)J {
+        
+        iload 0
+        i2l
+        lreturn
+    }
+
+
+    public static testI2f(I)F {
+        
+        iload 0
+        i2f
+        freturn
+    }
+
+
+    public static testI2d(I)D {
+        
+        iload 0
+        i2d
+        dreturn
+    }
+
+
+    public static testL2i(J)I {
+        
+        lload 0
+        l2i
+        ireturn
+    }
+
+
+    public static testI2b(I)I {
+        
+        iload 0
+        i2b
+        ireturn
+    }
+
+
+    public static testI2c(I)I {
+        
+        iload 0
+        i2c
+        ireturn
+    }
+
+
+    public static testI2s(I)I {
+        
+        iload 0
+        i2s
+        ireturn
+    }
+
+
+    // Array operations
+    public static testArraylength([I)I {
+        
+        aload 0
+        arraylength
+        ireturn
+    }
+
+
+    // Monitor instructions
+    public static testMonitorenter(java/lang/Object)V {
+        
+        aload 0
+        monitorenter
+        aload 0
+        monitorexit
+        return
+    }
+
+}

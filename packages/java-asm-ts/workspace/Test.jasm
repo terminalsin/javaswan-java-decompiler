@@ -1,0 +1,36 @@
+/*
+ * Disassembled from Test.class (originally Test.java) by JASM
+ *
+ * Original class version: 55
+ * Signature: <no signature>
+ */
+public class Test {
+    // <no signature>
+    // <no exceptions>
+    public <init>()V {
+        
+        label0:
+        aload 0
+        invokespecial java/lang/Object.<init>()V
+        return
+    }
+
+
+    // <no signature>
+    // <no exceptions>
+    public static test1()V {
+        
+        label0:
+        return
+    }
+
+
+    // <no signature>
+    // <no exceptions>
+    public static test2()V {
+        
+        label0:
+        return
+    }
+
+}

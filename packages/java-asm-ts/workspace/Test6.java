@@ -1,0 +1,1 @@
+public class Test6 { public static float testFloat0() { return 0.0f; } public static float testFloat1() { return 1.0f; } public static int testSwitch(int x) { switch(x) { case 0: return 0; case 1: return 1; case 2: return 2; default: return -1; } } }

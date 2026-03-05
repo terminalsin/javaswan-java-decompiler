@@ -1,0 +1,176 @@
+/*
+ * Test class for jump instructions
+ */
+public class test/JumpInsns {
+    // IFEQ instruction
+    public static testIfeq(I)I {
+        
+        iload 0
+        ifeq label_true
+        iconst 0
+        ireturn
+        label_true:
+        iconst 1
+        ireturn
+    }
+
+
+    // IFNE instruction
+    public static testIfne(I)I {
+        
+        iload 0
+        ifne label_true
+        iconst 0
+        ireturn
+        label_true:
+        iconst 1
+        ireturn
+    }
+
+
+    // IFLT instruction
+    public static testIflt(I)I {
+        
+        iload 0
+        iflt label_true
+        iconst 0
+        ireturn
+        label_true:
+        iconst 1
+        ireturn
+    }
+
+
+    // IFGE instruction
+    public static testIfge(I)I {
+        
+        iload 0
+        ifge label_true
+        iconst 0
+        ireturn
+        label_true:
+        iconst 1
+        ireturn
+    }
+
+
+    // IFGT instruction
+    public static testIfgt(I)I {
+        
+        iload 0
+        ifgt label_true
+        iconst 0
+        ireturn
+        label_true:
+        iconst 1
+        ireturn
+    }
+
+
+    // IFLE instruction
+    public static testIfle(I)I {
+        
+        iload 0
+        ifle label_true
+        iconst 0
+        ireturn
+        label_true:
+        iconst 1
+        ireturn
+    }
+
+
+    // IF_ICMPEQ instruction
+    public static testIfIcmpeq(I, I)I {
+        
+        iload 0
+        iload 1
+        if_icmpeq label_true
+        iconst 0
+        ireturn
+        label_true:
+        iconst 1
+        ireturn
+    }
+
+
+    // IF_ICMPNE instruction
+    public static testIfIcmpne(I, I)I {
+        
+        iload 0
+        iload 1
+        if_icmpne label_true
+        iconst 0
+        ireturn
+        label_true:
+        iconst 1
+        ireturn
+    }
+
+
+    // IF_ICMPLT instruction
+    public static testIfIcmplt(I, I)I {
+        
+        iload 0
+        iload 1
+        if_icmplt label_true
+        iconst 0
+        ireturn
+        label_true:
+        iconst 1
+        ireturn
+    }
+
+
+    // IF_ACMPEQ instruction
+    public static testIfAcmpeq(java/lang/Object, java/lang/Object)I {
+        
+        aload 0
+        aload 1
+        if_acmpeq label_true
+        iconst 0
+        ireturn
+        label_true:
+        iconst 1
+        ireturn
+    }
+
+
+    // IFNULL instruction
+    public static testIfnull(java/lang/Object)I {
+        
+        aload 0
+        ifnull label_true
+        iconst 0
+        ireturn
+        label_true:
+        iconst 1
+        ireturn
+    }
+
+
+    // IFNONNULL instruction
+    public static testIfnonnull(java/lang/Object)I {
+        
+        aload 0
+        ifnonnull label_true
+        iconst 0
+        ireturn
+        label_true:
+        iconst 1
+        ireturn
+    }
+
+
+    // GOTO instruction
+    public static testGoto()I {
+        
+        goto label_end
+        iconst 0
+        ireturn
+        label_end:
+        iconst 1
+        ireturn
+    }
+
+}

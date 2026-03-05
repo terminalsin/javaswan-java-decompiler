@@ -1,0 +1,66 @@
+/*
+ * Test class for LDC instructions
+ */
+public class test/LdcInsns {
+    // LDC with integer constant
+    public static testLdcInt()I {
+        
+        ldc 12345
+        ireturn
+    }
+
+
+    public static testLdcIntLarge()I {
+        
+        ldc 1000000
+        ireturn
+    }
+
+
+    // LDC with float constant
+    public static testLdcFloat()F {
+        
+        ldc 3.14
+        freturn
+    }
+
+
+    // LDC with string constant
+    public static testLdcString()java/lang/String {
+        
+        ldc "Hello, World!"
+        areturn
+    }
+
+
+    public static testLdcStringEmpty()java/lang/String {
+        
+        ldc ""
+        areturn
+    }
+
+
+    // LDC with class constant
+    public static testLdcClass()java/lang/Class {
+        
+        ldc java/lang/String
+        areturn
+    }
+
+
+    // LDC with long constant (uses ldc with L suffix)
+    public static testLdcLong()J {
+        
+        ldc 123456789012345L
+        lreturn
+    }
+
+
+    // LDC with double constant (uses ldc with d suffix)
+    public static testLdcDouble()D {
+        
+        ldc 3.141592653589793d
+        dreturn
+    }
+
+}
