@@ -36,10 +36,10 @@
   showstringspaces=false
 }
 
-\title{BlackSwan: Recursive Self-Improvement of a Java Decompiler\\via AI-Driven Code Modification and\\Multi-Metric Evaluation}
+\title{JavaSwan: Recursive Self-Improvement of a Java Decompiler via AI-agents}
 
 \author{
-\IEEEauthorblockN{Ghast}
+\IEEEauthorblockN{Shanyu Thibaut Juneja}
 \IEEEauthorblockA{BlackSwan\\
 \url{https://www.blackswan.sh}}
 }
@@ -49,7 +49,7 @@
 \maketitle
 
 \begin{abstract}
-We present BlackSwan, a Java bytecode decompiler implemented entirely in TypeScript that improves itself through a recursive feedback loop driven by an AI coding agent (Claude Code). The decompiler pipeline---bytecode parsing, intermediate representation, analysis, and source emission---was built by the AI agent itself across approximately two weeks, totaling ${\sim}32{,}000$ lines of TypeScript. We evaluate output quality using a composite metric drawn from nine similarity measures spanning textual, sequential, compression-based, and structural categories. In the recursive loop, the AI agent reads benchmark scores, reads the decompiler's own source code alongside competing decompilers' output, and proposes targeted patches. After iterative self-improvement, BlackSwan achieves a composite similarity score of 0.8693 on a 47-class benchmark, within 0.7\% of CFR (0.8760), a decompiler with over a decade of manual development. We discuss implications for automated deobfuscation, where the loop can be specialized against known obfuscation tools.
+We present JavaSwan, a Java bytecode decompiler implemented entirely in TypeScript that improves itself through a recursive feedback loop driven by an AI coding agent. The decompiler pipeline---bytecode parsing, intermediate representation, analysis, and source emission---was generated and iteratively refined by the same agent. We evaluate output quality using a composite metric drawn from nine similarity measures spanning textual, sequential, compression-based, and structural categories. In the recursive loop, the agent reads benchmark scores, reads the decompiler's own source code alongside competing decompilers' output, and proposes targeted patches. After iterative self-improvement, BlackSwan achieves a composite similarity score of 0.8693 on a 47-class benchmark, close to CFR (0.8760). We discuss implications for automated deobfuscation, where the loop can be specialized against known obfuscation tools.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -64,7 +64,7 @@ Java bytecode decompilation---the recovery of human-readable source code from co
 
 We propose closing this gap by constructing a decompiler whose source code is iteratively modified by an AI coding agent in a closed feedback loop. The agent reads benchmark scores, reads its own source, reads competing decompilers' output on the same inputs, and proposes patches. The benchmark is re-run. The loop continues.
 
-Critically, the AI agent also \emph{built} the decompiler. The entire pipeline---a port of OW2 ASM~\cite{asm} to TypeScript, an intermediate representation inspired by MapleIR~\cite{mapleir}, an analysis framework, and the decompiler itself---was authored by Claude Code (Opus 4.5) in approximately two weeks, comprising ${\sim}32{,}000$ lines of TypeScript. The language choice was architectural: the recursive loop requires the AI to read and edit the decompiler's source, and current-generation models are substantially more effective at modifying TypeScript than Java.
+The AI agent also \emph{built} the decompiler. The entire pipeline---a port of OW2 ASM~\cite{asm} to TypeScript, an intermediate representation inspired by MapleIR~\cite{mapleir}, an analysis framework, and the decompiler itself---was authored by the same agent, comprising ${\sim}32{,}000$ lines of TypeScript. The language choice was architectural: the recursive loop requires the AI to read and edit the decompiler's source, and current-generation models are substantially more effective at modifying TypeScript than Java.
 
 Our contributions are:
 \begin{enumerate}
@@ -120,7 +120,7 @@ BlackSwan is organized as a five-layer pipeline (Figure~\ref{fig:architecture}),
 \label{fig:architecture}
 \end{figure}
 
-\textbf{Layer 1: Bytecode Parsing.} A complete TypeScript port of OW2 ASM~\cite{asm} supporting all 200+ JVM opcodes, class file versions 45.3--65.0 (Java 1.1--21), and the full visitor-pattern API (\texttt{ClassReader}, \texttt{ClassWriter}, \texttt{MethodVisitor}, etc.). Round-trip correctness is verified: reading a \texttt{.class} file and writing it back produces byte-identical output. The port was completed in ${\sim}$4--5 hours of continuous Claude Code execution.
+\textbf{Layer 1: Bytecode Parsing.} A complete TypeScript port of OW2 ASM~\cite{asm} supporting all 200+ JVM opcodes, class file versions 45.3--65.0 (Java 1.1--21), and the full visitor-pattern API (\texttt{ClassReader}, \texttt{ClassWriter}, \texttt{MethodVisitor}, etc.). Round-trip correctness is verified: reading a \texttt{.class} file and writing it back produces byte-identical output.
 
 \textbf{Layer 2: Intermediate Representation.} A typed IR inspired by MapleIR~\cite{mapleir} that lifts JVM stack operations into expression trees within a control flow graph. A stack simulator walks bytecode instructions per basic block, popping operand expressions and constructing typed composite expressions (e.g., \texttt{ArithmeticExpr}, \texttt{VirtualInvocationExpr}). The IR comprises 19 expression node types and 13 statement types, with \texttt{PhiExpr} nodes at control flow merge points.
 
@@ -169,7 +169,7 @@ The loop (Figure~\ref{fig:loop}) operates in four phases per iteration:
 
 \textbf{Phase 2 (Evaluate):} Each decompiled file is scored against its original source using nine similarity metrics (Section~\ref{sec:metrics}), producing per-file scores and aggregate statistics (mean, median, standard deviation, min, max). Results are emitted in JSON, Markdown, and tabular formats.
 
-\textbf{Phase 3 (Analyze):} The AI agent (Claude Code, powered by Claude Opus) reads:
+\textbf{Phase 3 (Analyze):} The AI agent reads:
 \begin{itemize}
     \item Per-file and aggregate benchmark scores
     \item The decompiler's own TypeScript source code
@@ -213,8 +213,9 @@ All metrics produce scores in $[0, 1]$ where 1 indicates identity with the origi
 \centering
 \caption{Similarity Metrics and Composite Weights}
 \label{tab:metrics}
-\footnotesize
-\begin{tabular}{@{}llcl@{}}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{0.18\columnwidth}p{0.25\columnwidth}cp{0.22\columnwidth}@{}}
 \toprule
 \textbf{Category} & \textbf{Metric} & \textbf{Weight} & \textbf{Foundation} \\
 \midrule
@@ -301,14 +302,16 @@ Table~\ref{tab:results} presents composite similarity scores after iterative sel
 \centering
 \caption{Decompiler Composite Similarity Scores (47-class benchmark)}
 \label{tab:results}
-\begin{tabular}{@{}clccc@{}}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}cp{0.33\columnwidth}cc@{}}
 \toprule
-\textbf{Rank} & \textbf{Decompiler} & \textbf{Composite} & \textbf{Match Rate} & \textbf{Dev. Time} \\
+\textbf{Rank} & \textbf{Decompiler} & \textbf{Composite} & \textbf{Match Rate} \\
 \midrule
-1 & Vineflower & 0.9360 & 100\% & Years \\
-2 & Procyon & 0.9010 & 100\% & Years \\
-3 & CFR & 0.8760 & 100\% & 12+ years \\
-4 & \textbf{BlackSwan (ours)} & \textbf{0.8693} & \textbf{100\%} & \textbf{${\sim}$2 weeks} \\
+1 & Vineflower & 0.9360 & 100\% \\
+2 & Procyon & 0.9010 & 100\% \\
+3 & CFR & 0.8760 & 100\% \\
+4 & \textbf{BlackSwan (ours)} & \textbf{0.8693} & \textbf{100\%} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -318,7 +321,6 @@ Key observations:
 \begin{itemize}
     \item \textbf{Competitive quality}: BlackSwan scores within 0.7\% of CFR (0.8693 vs.\ 0.8760), a decompiler with over a decade of manual development by an experienced compiler engineer.
     \item \textbf{Full coverage}: All 47 files are successfully decompiled (100\% match rate), matching established tools.
-    \item \textbf{Development efficiency}: The entire ${\sim}$32,000-line codebase was built in approximately two weeks, with the ASM port alone completing in 4--5 hours of continuous AI execution.
     \item \textbf{Score gap to leader}: The 7.1\% gap to Vineflower (0.9360) reflects primarily two factors: exception handler decompilation (BlackSwan falls back to state machines; Vineflower handles them natively) and advanced pattern matching for complex control flow (loop unrolling, try-with-resources reconstruction).
 \end{itemize}
 
@@ -366,7 +368,8 @@ Across iterations, the agent made four categories of changes:
 \caption{Categories of AI-Proposed Modifications}
 \label{tab:modifications}
 \footnotesize
-\begin{tabular}{@{}p{2.2cm}p{5.5cm}@{}}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{0.25\columnwidth}p{0.69\columnwidth}@{}}
 \toprule
 \textbf{Category} & \textbf{Description} \\
 \midrule
@@ -383,31 +386,7 @@ Bug fixes & Redundant cast emission, phi expression edge cases, incorrect type n
 
 The most productive category was competitor-informed heuristics. By diffing BlackSwan's output against CFR's on the same input, the agent identified specific patterns where CFR produced cleaner code, traced the structural cause, and implemented equivalent logic. This represents a form of automated reverse engineering of decompilation strategies.
 
-\subsection{Development Timeline}
-
-\begin{table}[t]
-\centering
-\caption{Approximate Development Timeline}
-\label{tab:timeline}
-\footnotesize
-\begin{tabular}{@{}lll@{}}
-\toprule
-\textbf{Component} & \textbf{LoC} & \textbf{Time} \\
-\midrule
-ASM port (Layer 1) & ${\sim}$12,000 & 4--5 hours \\
-IR + stack simulator (Layer 2) & ${\sim}$6,000 & 2--3 days \\
-Analysis framework (Layer 3) & ${\sim}$5,000 & 1--2 days \\
-Decompiler + emission (Layer 4) & ${\sim}$5,000 & 2--3 days \\
-AI post-processor (Layer 5) & ${\sim}$4,000 & 1 day \\
-Benchmark harness & ${\sim}$3,000 & 1 day \\
-Self-improvement iterations & --- & 2--3 days \\
-\midrule
-\textbf{Total} & ${\sim}$\textbf{32,000} & ${\sim}$\textbf{2 weeks} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The ASM port used round-trip byte equality on three reference JARs as its convergence criterion. The IR and decompiler layers were built iteratively against test cases. All implementation was performed by Claude Code (Opus 4.5) with human oversight for architectural decisions and prompt refinement.
+The ASM port used round-trip byte equality on three reference JARs as its convergence criterion. The IR and decompiler layers were built iteratively against test cases, with human oversight for architectural decisions and prompt refinement.
 
 %% ============================================================
 \section{Applications to Automated Deobfuscation}
